@@ -51,17 +51,17 @@ _COL_MAP = {
 def load_from_database():
     try:
         import psycopg2
-        from dotenv import dotenv_values
+        from dotenv import load_dotenv
 
         env_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", ".env")
-        env = dotenv_values(env_path)
+        load_dotenv(env_path)
 
         conn = psycopg2.connect(
-            host=env.get("DB_HOST", "localhost"),
-            port=int(env.get("DB_PORT", 5432)),
-            dbname=env.get("DB_NAME", "ww1_db"),
-            user=env.get("DB_USER", "postgres"),
-            password=env.get("DB_PASSWORD", ""),
+            host=os.getenv("DB_HOST", "localhost"),
+            port=int(os.getenv("DB_PORT", 5432)),
+            dbname=os.getenv("DB_NAME", "ww1_db"),
+            user=os.getenv("DB_USER", "postgres"),
+            password=os.getenv("DB_PASSWORD", ""),
         )
         enlistment = pd.read_sql("SELECT * FROM ww1_enlistment", conn)
         court_martial = pd.read_sql("SELECT regiment_number, unit_type FROM ww1_court_martial", conn)

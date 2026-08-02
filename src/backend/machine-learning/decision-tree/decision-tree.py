@@ -35,19 +35,22 @@ _DB_COL_MAP = {
 # ---------------------------------------------------------------------------------------------------------------------------------
 
 def _get_db_connection():
-    """Get a PostgreSQL connection using .env credentials."""
+    """Get a PostgreSQL connection. Reads DB config from the process
+    environment (injected by the host in production); for local dev it first
+    loads the repo-root .env into the environment. Mirrors helper.py so it
+    works both locally and on hosts like Render where there is no .env file."""
     import psycopg2
-    from dotenv import dotenv_values
+    from dotenv import load_dotenv
 
     env_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", ".env")
-    env = dotenv_values(env_path)
+    load_dotenv(env_path)
 
     return psycopg2.connect(
-        host=env.get("DB_HOST", "localhost"),
-        port=int(env.get("DB_PORT", 5432)),
-        user=env.get("DB_USER", "postgres"),
-        password=env.get("DB_PASSWORD", ""),
-        dbname=env.get("DB_NAME", "ww1_db"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=int(os.getenv("DB_PORT", 5432)),
+        user=os.getenv("DB_USER", "postgres"),
+        password=os.getenv("DB_PASSWORD", ""),
+        dbname=os.getenv("DB_NAME", "ww1_db"),
     )
 
 
