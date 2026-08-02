@@ -51,6 +51,8 @@ const AdminLogs = () => {
         const token = localStorage.getItem("auth_token");
         fetch("/api/admin/logs?limit=100", { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
+                if (res.status === 403) throw new Error("Admin access required.");
+                if (res.status === 401) throw new Error("Your session has expired — please sign in again.");
                 if (!res.ok) throw new Error(`Request failed (${res.status})`);
                 return res.json();
             })
