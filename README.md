@@ -130,6 +130,34 @@ DB_PORT=5432
 JWT_SECRET=your-secret-here
 ```
 
+#### Upgrading an existing database (`api_request_log` table)
+
+If you set up your database before the API request logging feature was added, you already have a working `ww1_db` and do **not** need to re-run `setup_db.py` (which drops and re-imports everything, including user accounts). Instead, create the missing table manually:
+
+```sql
+CREATE TABLE api_request_log (
+    id SERIAL PRIMARY KEY,
+    ts TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    method VARCHAR(10) NOT NULL,
+    path TEXT NOT NULL,
+    status_code INT NOT NULL,
+    duration_ms DOUBLE PRECISION NOT NULL,
+    username TEXT
+);
+
+CREATE INDEX idx_api_request_log_ts ON api_request_log (ts DESC);
+```
+
+You can run this either from a `.sql` file or directly as a one-liner:
+
+```bash
+psql -U postgres -h localhost -d ww1_db -f api_request_log.sql
+# or, inline:
+psql -U postgres -h localhost -d ww1_db -c "CREATE TABLE api_request_log (id SERIAL PRIMARY KEY, ts TIMESTAMPTZ NOT NULL DEFAULT NOW(), method VARCHAR(10) NOT NULL, path TEXT NOT NULL, status_code INT NOT NULL, duration_ms DOUBLE PRECISION NOT NULL, username TEXT); CREATE INDEX idx_api_request_log_ts ON api_request_log (ts DESC);"
+```
+
+If you skip this step, nothing breaks: the logging hook silently no-ops (requests just aren't recorded) and the admin dashboard shows a null count for `api_request_log` instead of a number.
+
 ### 2. Start the backend
 
 ```bash
