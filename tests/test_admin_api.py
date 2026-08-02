@@ -117,3 +117,56 @@ def test_status_reports_db_down(mock_get_conn, client):
     assert data["database"]["connected"] is False
     assert "connection refused" in data["database"]["error"]
     assert data["database"]["counts"]["ww1_enlistment"] is None
+
+
+# ---------- /api/admin/logs ----------
+
+def test_logs_requires_token(client):
+    resp = client.get("/api/admin/logs")
+    assert resp.status_code == 401
+
+
+def test_logs_rejects_viewer(client):
+    resp = client.get("/api/admin/logs", headers=_viewer_headers())
+    assert resp.status_code == 403
+
+
+@patch("route.get_db_connection")
+def test_logs_success_default_limit(mock_get_conn, client):
+    mock_conn, mock_cursor = _mock_db(mock_get_conn)
+    ts = datetime.datetime(2026, 8, 1, 12, 0, 0)
+    mock_cursor.fetchall.return_value = [
+        (2, ts, "GET", "/api/reports", 200, 12.5, "viewer1"),
+        (1, ts, "POST", "/api/trends", 200, 88.14, None),
+    ]
+
+    resp = client.get("/api/admin/logs", headers=_admin_headers())
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["count"] == 2
+    assert data["logs"][0]["method"] == "GET"
+    assert data["logs"][0]["username"] == "viewer1"
+    assert data["logs"][1]["username"] is None
+    assert data["logs"][1]["duration_ms"] == 88.1
+    # default limit is 100
+    assert mock_cursor.execute.call_args[0][1] == (100,)
+
+
+@patch("route.get_db_connection")
+def test_logs_limit_clamped_to_500(mock_get_conn, client):
+    mock_conn, mock_cursor = _mock_db(mock_get_conn)
+    mock_cursor.fetchall.return_value = []
+
+    resp = client.get("/api/admin/logs?limit=9999", headers=_admin_headers())
+    assert resp.status_code == 200
+    assert mock_cursor.execute.call_args[0][1] == (500,)
+
+
+@patch("route.get_db_connection")
+def test_logs_invalid_limit_uses_default(mock_get_conn, client):
+    mock_conn, mock_cursor = _mock_db(mock_get_conn)
+    mock_cursor.fetchall.return_value = []
+
+    resp = client.get("/api/admin/logs?limit=abc", headers=_admin_headers())
+    assert resp.status_code == 200
+    assert mock_cursor.execute.call_args[0][1] == (100,)

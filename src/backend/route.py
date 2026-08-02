@@ -405,5 +405,44 @@ def admin_status():
         'ml_models': ml_models,
     }), 200
 
+@app.route('/api/admin/logs', methods=['GET'])
+def admin_logs():
+    payload, err = _require_admin()
+    if err:
+        return err
+
+    try:
+        limit = int(request.args.get('limit', 100))
+    except (TypeError, ValueError):
+        limit = 100
+    limit = max(1, min(limit, 500))
+
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT id, ts, method, path, status_code, duration_ms, username "
+            "FROM api_request_log ORDER BY ts DESC, id DESC LIMIT %s",
+            (limit,),
+        )
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        logs = [
+            {
+                'id': r[0],
+                'timestamp': r[1].isoformat() if r[1] else None,
+                'method': r[2],
+                'path': r[3],
+                'status_code': r[4],
+                'duration_ms': round(r[5], 1) if r[5] is not None else None,
+                'username': r[6],
+            }
+            for r in rows
+        ]
+        return jsonify({'logs': logs, 'count': len(logs)}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
