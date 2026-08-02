@@ -16,7 +16,7 @@ const methods = [
     technical: "Decision Tree Classification",
     explanation:
       "Combines both tables and labels each soldier as court-martialled or not. The algorithm finds the best feature splits to separate the two groups, producing a readable flowchart of rules.",
-    features:  "Rank, Unit Type, Birthplace, Occupation, Marital Status, Enlistment Year, Birth Year",
+    features:  "Rank, Birthplace, Occupation, Marital Status, Enlistment Year, Birth Year",
     visualization: "Tree diagram (flowchart)",
   },
   {
