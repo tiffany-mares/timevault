@@ -76,3 +76,44 @@ def test_after_request_hook_skips_admin_paths(mock_get_conn, client):
         app.config['LOG_REQUESTS_IN_TESTS'] = False
     for call in mock_get_conn.return_value.cursor.return_value.execute.call_args_list:
         assert "INSERT INTO api_request_log" not in call[0][0]
+
+
+# ---------- /api/admin/status ----------
+
+def test_status_requires_token(client):
+    resp = client.get("/api/admin/status")
+    assert resp.status_code == 401
+
+
+def test_status_rejects_viewer(client):
+    resp = client.get("/api/admin/status", headers=_viewer_headers())
+    assert resp.status_code == 403
+
+
+@patch("route.get_db_connection")
+def test_status_success(mock_get_conn, client):
+    mock_conn, mock_cursor = _mock_db(mock_get_conn)
+    # One COUNT(*) per table, in _STATUS_TABLES order
+    mock_cursor.fetchone.side_effect = [(57000,), (11000,), (2,), (5,), (123,)]
+
+    resp = client.get("/api/admin/status", headers=_admin_headers())
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["backend"] == "online"
+    assert data["database"]["connected"] is True
+    assert data["database"]["counts"]["ww1_enlistment"] == 57000
+    assert data["database"]["counts"]["api_request_log"] == 123
+    assert set(data["ml_models"].keys()) == {"decision_tree", "logistic_regression", "naive_bayes"}
+    assert all(isinstance(v, bool) for v in data["ml_models"].values())
+
+
+@patch("route.get_db_connection")
+def test_status_reports_db_down(mock_get_conn, client):
+    mock_get_conn.side_effect = Exception("connection refused")
+
+    resp = client.get("/api/admin/status", headers=_admin_headers())
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["database"]["connected"] is False
+    assert "connection refused" in data["database"]["error"]
+    assert data["database"]["counts"]["ww1_enlistment"] is None

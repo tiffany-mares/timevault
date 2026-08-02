@@ -285,6 +285,15 @@ def _log_api_request(response):
         pass
     return response
 
+def _require_admin():
+    """Return (payload, None) for a valid admin token, else (None, error_response)."""
+    payload = _get_user_from_token()
+    if not payload:
+        return None, (jsonify({'error': 'Unauthorized'}), 401)
+    if payload.get('role') != 'admin':
+        return None, (jsonify({'error': 'Admin access required'}), 403)
+    return payload, None
+
 @app.route('/api/reports', methods=['GET'])
 def get_reports():
     payload = _get_user_from_token()
@@ -354,6 +363,47 @@ def delete_report(report_id):
         return jsonify({'ok': True}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+_STATUS_TABLES = ("ww1_enlistment", "ww1_court_martial", "app_user", "user_reports", "api_request_log")
+
+@app.route('/api/admin/status', methods=['GET'])
+def admin_status():
+    payload, err = _require_admin()
+    if err:
+        return err
+
+    counts = {}
+    db_connected = False
+    db_error = None
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        for table in _STATUS_TABLES:
+            try:
+                # Table names come from a fixed module-level tuple, never user input.
+                cur.execute(f"SELECT COUNT(*) FROM {table}")
+                counts[table] = cur.fetchone()[0]
+            except Exception:
+                conn.rollback()  # a failed statement aborts the tx; recover for the next table
+                counts[table] = None
+        cur.close()
+        conn.close()
+        db_connected = True
+    except Exception as e:
+        db_error = str(e)
+        counts = {table: None for table in _STATUS_TABLES}
+
+    ml_models = {
+        'decision_tree': os.path.exists(dt_script_path),
+        'logistic_regression': os.path.exists(lr_script_path),
+        'naive_bayes': os.path.exists(nb_script_path),
+    }
+
+    return jsonify({
+        'backend': 'online',
+        'database': {'connected': db_connected, 'error': db_error, 'counts': counts},
+        'ml_models': ml_models,
+    }), 200
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
