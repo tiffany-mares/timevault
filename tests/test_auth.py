@@ -6,8 +6,6 @@ import pytest
 from unittest.mock import patch, MagicMock
 import json
 
-os.environ.setdefault("JWT_SECRET","test-secret-key")
-
 from signin import auth_bp, generate_token, decode_token
 
 from flask import Flask
@@ -43,6 +41,20 @@ def test_decode_token_invalid():
 
 def test_decode_token_empty():
     assert decode_token("") is None
+
+
+def test_resolve_jwt_secret_uses_configured_value():
+    from signin import _resolve_jwt_secret
+    assert _resolve_jwt_secret("configured-secret-value") == "configured-secret-value"
+
+
+def test_resolve_jwt_secret_fallback_is_strong_and_not_the_old_default():
+    from signin import _resolve_jwt_secret
+    s1 = _resolve_jwt_secret(None)
+    s2 = _resolve_jwt_secret(None)
+    assert len(s1) >= 32                             # long enough for HS256 (no InsecureKeyLengthWarning)
+    assert s1 != "dev-secret-change-in-production"   # the weak known default is gone
+    assert s1 != s2                                  # random per call (ephemeral)
 
 
 @patch("signin.get_db_connection")

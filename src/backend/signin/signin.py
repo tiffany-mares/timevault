@@ -1,5 +1,7 @@
 # This file handles authentication - registration, login, and admin login
 import os
+import sys
+import secrets
 import jwt
 import datetime
 from flask import Blueprint, request, jsonify
@@ -8,8 +10,24 @@ from helper import get_db_connection
 
 auth_bp = Blueprint('auth', __name__)
 
-# Load JWT secret from environment, fall back to a default for development
-JWT_SECRET = os.getenv("JWT_SECRET", "dev-secret-change-in-production")
+
+def _resolve_jwt_secret(configured):
+    """Return the JWT signing secret. Use the configured value if present;
+    otherwise generate a random ephemeral secret so no weak, known key ever
+    ships in source. A random secret means tokens do not survive a restart -
+    set JWT_SECRET in .env for persistent sessions."""
+    if configured:
+        return configured
+    print(
+        "WARNING: JWT_SECRET is not set - using a random ephemeral secret. "
+        "Tokens will not persist across restarts; set JWT_SECRET in .env.",
+        file=sys.stderr,
+    )
+    return secrets.token_hex(32)
+
+
+# Load the JWT secret from the environment; never fall back to a known literal.
+JWT_SECRET = _resolve_jwt_secret(os.getenv("JWT_SECRET"))
 JWT_EXPIRY_HOURS = 24
 
 def generate_token(user_id: int, username: str, role: str) -> str:
