@@ -52,7 +52,7 @@ const AdminLogs = () => {
         fetch("/api/admin/logs?limit=100", { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 if (res.status === 403) throw new Error("Admin access required.");
-                if (res.status === 401) throw new Error("Your session has expired — please sign in again.");
+                if (res.status === 401) throw new Error("Your session has expired, please sign in again.");
                 if (!res.ok) throw new Error(`Request failed (${res.status})`);
                 return res.json();
             })
@@ -109,7 +109,7 @@ const AdminLogs = () => {
                                 {logs.map((row, i) => (
                                     <tr key={row.id} className={`border-b border-border/40 ${i % 2 === 0 ? "bg-card" : "bg-parchment-dark/20"}`}>
                                         <td className="py-2 px-3 font-mono text-muted-foreground whitespace-nowrap">
-                                            {row.timestamp ? new Date(row.timestamp).toLocaleString() : "—"}
+                                            {row.timestamp ? new Date(row.timestamp).toLocaleString() : "N/A"}
                                         </td>
                                         <td className="py-2 px-3">
                                             <span className={`text-[11px] font-mono font-bold px-1.5 py-0.5 rounded-sm ${methodColors[row.method] ?? ""}`}>
@@ -118,8 +118,8 @@ const AdminLogs = () => {
                                         </td>
                                         <td className="py-2 px-3 font-mono text-foreground">{row.path}</td>
                                         <td className={`py-2 px-3 font-mono font-bold ${statusColor(row.status_code)}`}>{row.status_code}</td>
-                                        <td className="py-2 px-3 font-mono text-muted-foreground">{row.duration_ms !== null ? `${row.duration_ms} ms` : "—"}</td>
-                                        <td className="py-2 px-3 font-mono text-muted-foreground">{row.username ?? "—"}</td>
+                                        <td className="py-2 px-3 font-mono text-muted-foreground">{row.duration_ms !== null ? `${row.duration_ms} ms` : "N/A"}</td>
+                                        <td className="py-2 px-3 font-mono text-muted-foreground">{row.username ?? "N/A"}</td>
                                     </tr>
                                 ))}
                             </tbody>

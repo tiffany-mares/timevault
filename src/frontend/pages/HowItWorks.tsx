@@ -2,37 +2,10 @@ import { PageLayout } from "@/components/PageLayout";
 import { WireBox } from "@/components/wireframe";
 import { SectionNav } from "@/components/SectionNav";
 import { Layers, Monitor, Server, Database, Brain, Shield, ScrollText, Cloud, Cpu } from "lucide-react";
+import archDiagram from "@/assets/architecture-diagram.png";
 
 const Mono = ({ children }: { children: React.ReactNode }) => (
     <span className="font-mono text-foreground">{children}</span>
-);
-
-// ---- Architecture diagram building blocks ----
-const nodeColors: Record<string, string> = {
-    navy: "border-navy/40 bg-navy/10 text-navy",
-    olive: "border-olive/40 bg-olive/10 text-olive",
-    teal: "border-teal/40 bg-teal/10 text-teal",
-    gold: "border-gold/50 bg-gold/10 text-foreground",
-    muted: "border-border bg-muted/40 text-muted-foreground",
-};
-
-const DiagramNode = ({ color, children }: { color: string; children: React.ReactNode }) => (
-    <div className={`rounded-md border-2 px-4 py-2 text-center text-xs font-mono font-medium ${nodeColors[color]}`}>
-        {children}
-    </div>
-);
-
-const Arrow = ({ label }: { label: string }) => (
-    <div className="flex flex-col items-center py-1 text-[10px] font-mono text-muted-foreground">
-        <span className="text-olive text-lg leading-none">↓</span>
-        <span>{label}</span>
-    </div>
-);
-
-const Chip = ({ children }: { children: React.ReactNode }) => (
-    <span className="rounded-sm border border-teal/30 bg-card px-2 py-1 text-center text-[11px] font-mono text-foreground">
-        {children}
-    </span>
 );
 
 // ---- Tech stack data ----
@@ -41,7 +14,7 @@ const techGroups = [
     { title: "Backend", items: ["Python", "Flask", "gunicorn", "psycopg2", "PyJWT", "Werkzeug"] },
     { title: "Machine Learning", items: ["scikit-learn", "pandas", "NumPy"] },
     { title: "Data", items: ["PostgreSQL"] },
-    { title: "Infrastructure", items: ["Render — Static Site", "Render — Web Service", "Managed PostgreSQL"] },
+    { title: "Infrastructure", items: ["Render, Static Site", "Render, Web Service", "Managed PostgreSQL"] },
 ];
 
 const HowItWorks = () => {
@@ -49,7 +22,7 @@ const HowItWorks = () => {
         <PageLayout
             code="P-TS"
             title="Tech Stack"
-            subtitle="A technical look at how TimeVault is built — the technologies, architecture, and data flow from the browser to the database."
+            subtitle="A technical look at how TimeVault is built, the technologies, architecture, and data flow from the browser to the database."
             maxWidth="max-w-4xl"
             marqueeItems={["Tech Stack", "React + Vite", "Flask API", "PostgreSQL", "scikit-learn", "JWT Auth", "Render"]}
         >
@@ -97,34 +70,19 @@ const HowItWorks = () => {
                         </div>
 
                         {/* Software architecture diagram */}
-                        <div className="my-2 flex flex-col items-center gap-0 rounded-md border border-border bg-muted/10 p-4">
-                            <DiagramNode color="navy">User / Browser</DiagramNode>
-                            <Arrow label="HTTPS" />
-                            <DiagramNode color="olive">React + Vite SPA · Static Site</DiagramNode>
-                            <Arrow label="/api/* · rewrite proxy" />
-                            <div className="w-full max-w-sm rounded-md border-2 border-teal/40 bg-teal/5 p-3">
-                                <p className="text-center text-[11px] font-mono font-semibold text-teal mb-2">Flask API · gunicorn</p>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <Chip>Auth · JWT</Chip>
-                                    <Chip>REST endpoints</Chip>
-                                    <Chip>ML models</Chip>
-                                    <Chip>Request logger</Chip>
-                                </div>
-                            </div>
-                            <div className="flex w-full max-w-sm justify-around gap-4">
-                                <div className="flex flex-col items-center">
-                                    <Arrow label="SQL" />
-                                    <DiagramNode color="gold">PostgreSQL<br />6 tables</DiagramNode>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <Arrow label="read" />
-                                    <DiagramNode color="muted">Naive Bayes<br />CSV</DiagramNode>
-                                </div>
-                            </div>
-                            <p className="mt-3 text-[10px] font-body text-muted-foreground/70 text-center">All three services are hosted on Render; local dev mirrors this via the Vite proxy.</p>
-                        </div>
+                        <figure className="my-2">
+                            <img
+                                src={archDiagram}
+                                alt="TimeVault software architecture diagram: browser to React SPA to Flask API to PostgreSQL, with the ML subsystem, request-logging hook, and Render deployment boundary."
+                                className="w-full h-auto rounded-md border border-border bg-card"
+                                loading="lazy"
+                            />
+                            <figcaption className="mt-2 text-[11px] font-body text-muted-foreground/70 text-center">
+                                Runtime architecture and request flow (C4 container level).
+                            </figcaption>
+                        </figure>
 
-                        <p>A request flows in one direction: the browser calls the API using relative <Mono>/api/…</Mono> paths; the API authenticates, runs the query or ML model, reads or writes PostgreSQL, and returns JSON; the UI turns that JSON into charts and tables. Because the frontend only uses relative paths, it stays same-origin with the backend — Vite proxies <Mono>/api</Mono> to <Mono>localhost:5001</Mono> in dev, and a static-site rewrite proxies it in production, so there's no CORS handshake.</p>
+                        <p>A request flows in one direction: the browser calls the API using relative <Mono>/api/…</Mono> paths; the API authenticates, runs the query or ML model, reads or writes PostgreSQL, and returns JSON; the UI turns that JSON into charts and tables. Because the frontend only uses relative paths, it stays same-origin with the backend, Vite proxies <Mono>/api</Mono> to <Mono>localhost:5001</Mono> in dev, and a static-site rewrite proxies it in production, so there's no CORS handshake.</p>
                     </div>
                 </WireBox>
             </div>
@@ -134,7 +92,7 @@ const HowItWorks = () => {
                     <div className="space-y-3 text-sm font-body text-muted-foreground leading-relaxed">
                         <div className="flex items-start gap-3">
                             <Monitor className="w-5 h-5 text-olive mt-0.5 flex-shrink-0" />
-                            <p>The interface is a <span className="text-foreground font-medium">React 18 + TypeScript</span> single-page app bundled by <span className="text-foreground font-medium">Vite</span>. It builds to a folder of static files (<Mono>dist/</Mono>) — plain HTML, CSS and JavaScript that any static host can serve.</p>
+                            <p>The interface is a <span className="text-foreground font-medium">React 18 + TypeScript</span> single-page app bundled by <span className="text-foreground font-medium">Vite</span>. It builds to a folder of static files (<Mono>dist/</Mono>), plain HTML, CSS and JavaScript that any static host can serve.</p>
                         </div>
                         <ul className="list-disc list-inside space-y-1.5 pl-2">
                             <li><span className="text-foreground">Routing</span> is client-side via React Router; there is no full page reload when moving between modules.</li>
@@ -156,11 +114,11 @@ const HowItWorks = () => {
                         </div>
                         <p>Every endpoint returns JSON. The main groups are:</p>
                         <ul className="list-disc list-inside space-y-1.5 pl-2">
-                            <li><Mono>/api/auth/*</Mono> — register, login, admin login, and token verification.</li>
-                            <li><Mono>/api/trends</Mono> and <Mono>/api/compare</Mono> — aggregate queries for the Offence Trends and Compare modules.</li>
-                            <li><Mono>/api/run-decision-tree</Mono>, <Mono>/api/run-logistic-regression</Mono>, <Mono>/api/run-naive-bayes</Mono> — train and return a model on request.</li>
-                            <li><Mono>/api/reports</Mono> — save, list, and delete a signed-in user's reports.</li>
-                            <li><Mono>/api/admin/*</Mono> — admin-only database health and request-log endpoints.</li>
+                            <li><Mono>/api/auth/*</Mono>, register, login, admin login, and token verification.</li>
+                            <li><Mono>/api/trends</Mono> and <Mono>/api/compare</Mono>, aggregate queries for the Offence Trends and Compare modules.</li>
+                            <li><Mono>/api/run-decision-tree</Mono>, <Mono>/api/run-logistic-regression</Mono>, <Mono>/api/run-naive-bayes</Mono>, train and return a model on request.</li>
+                            <li><Mono>/api/reports</Mono>, save, list, and delete a signed-in user's reports.</li>
+                            <li><Mono>/api/admin/*</Mono>, admin-only database health and request-log endpoints.</li>
                         </ul>
                         <p>The API talks to PostgreSQL with <span className="text-foreground font-medium">psycopg2</span> using parameterized (<Mono>%s</Mono>) queries to prevent SQL injection. Connection settings are read from the process environment (<Mono>DB_HOST</Mono>, <Mono>DB_NAME</Mono>, <Mono>DB_USER</Mono>, <Mono>DB_PASSWORD</Mono>, <Mono>DB_PORT</Mono>), so the same code runs locally and in the cloud without edits.</p>
                     </div>
@@ -176,11 +134,11 @@ const HowItWorks = () => {
                         </div>
                         <p>The core tables:</p>
                         <ul className="list-disc list-inside space-y-1.5 pl-2">
-                            <li><Mono>ww1_enlistment</Mono> — soldier demographics and service details.</li>
-                            <li><Mono>ww1_court_martial</Mono> — courts martial proceedings and offence records.</li>
-                            <li><Mono>joined_courtmartialled_soldiers</Mono> — enlistment records matched to courts martial (used to label soldiers for the ML models).</li>
-                            <li><Mono>app_user</Mono> — accounts and roles; <Mono>user_reports</Mono> — saved reports (foreign key to <Mono>app_user</Mono>).</li>
-                            <li><Mono>api_request_log</Mono> — the automatic request audit trail.</li>
+                            <li><Mono>ww1_enlistment</Mono>, soldier demographics and service details.</li>
+                            <li><Mono>ww1_court_martial</Mono>, courts martial proceedings and offence records.</li>
+                            <li><Mono>joined_courtmartialled_soldiers</Mono>, enlistment records matched to courts martial (used to label soldiers for the ML models).</li>
+                            <li><Mono>app_user</Mono>, accounts and roles; <Mono>user_reports</Mono>, saved reports (foreign key to <Mono>app_user</Mono>).</li>
+                            <li><Mono>api_request_log</Mono>, the automatic request audit trail.</li>
                         </ul>
                         <p>Indexes on regiment number, surname, and offence keep the common trend and comparison queries fast.</p>
                     </div>
@@ -195,9 +153,9 @@ const HowItWorks = () => {
                             <p>The three models are built with <span className="text-foreground font-medium">scikit-learn</span>, trained <span className="text-foreground font-medium">on demand</span> from live data each time you run an analysis (not precomputed), using the features you select. Pandas and NumPy handle the data preparation.</p>
                         </div>
                         <ul className="list-disc list-inside space-y-2 pl-2">
-                            <li><span className="text-foreground font-medium">Decision Tree</span> — labels each enlistment record as court-martialled or not (via the joined table), one-hot-encodes nominal features and ordinal-encodes rank, then trains a <Mono>DecisionTreeClassifier</Mono> with <Mono>class_weight="balanced"</Mono> to handle the rare positive class. It returns a readable tree of rules with court-martial rates at each leaf.</li>
-                            <li><span className="text-foreground font-medium">Logistic Regression</span> — fits a regression on the same labels and returns a coefficient per feature value, ranking how much each pushes court-martial likelihood up or down (shown as a diverging bar chart).</li>
-                            <li><span className="text-foreground font-medium">Naive Bayes</span> — a pattern-discovery tool (not a predictor) that reads a bundled courts-martial CSV and uses conditional probabilities and lift to surface which demographics are over- or under-represented within each offence category.</li>
+                            <li><span className="text-foreground font-medium">Decision Tree</span>, labels each enlistment record as court-martialled or not (via the joined table), one-hot-encodes nominal features and ordinal-encodes rank, then trains a <Mono>DecisionTreeClassifier</Mono> with <Mono>class_weight="balanced"</Mono> to handle the rare positive class. It returns a readable tree of rules with court-martial rates at each leaf.</li>
+                            <li><span className="text-foreground font-medium">Logistic Regression</span>, fits a regression on the same labels and returns a coefficient per feature value, ranking how much each pushes court-martial likelihood up or down (shown as a diverging bar chart).</li>
+                            <li><span className="text-foreground font-medium">Naive Bayes</span>, a pattern-discovery tool (not a predictor) that reads a bundled courts-martial CSV and uses conditional probabilities and lift to surface which demographics are over- or under-represented within each offence category.</li>
                         </ul>
                     </div>
                 </WireBox>
@@ -208,7 +166,7 @@ const HowItWorks = () => {
                     <div className="space-y-3 text-sm font-body text-muted-foreground leading-relaxed">
                         <div className="flex items-start gap-3">
                             <Shield className="w-5 h-5 text-olive mt-0.5 flex-shrink-0" />
-                            <p>Authentication uses <span className="text-foreground font-medium">JSON Web Tokens</span> (JWT, HS256, 24-hour expiry). Passwords are hashed with Werkzeug's <Mono>generate_password_hash</Mono> before storage — plaintext passwords are never kept.</p>
+                            <p>Authentication uses <span className="text-foreground font-medium">JSON Web Tokens</span> (JWT, HS256, 24-hour expiry). Passwords are hashed with Werkzeug's <Mono>generate_password_hash</Mono> before storage, plaintext passwords are never kept.</p>
                         </div>
                         <ul className="list-disc list-inside space-y-1.5 pl-2">
                             <li>On login the server issues a signed token carrying the user id, username, and role; the browser stores it and sends it on later requests.</li>
@@ -224,7 +182,7 @@ const HowItWorks = () => {
                     <div className="space-y-3 text-sm font-body text-muted-foreground leading-relaxed">
                         <div className="flex items-start gap-3">
                             <ScrollText className="w-5 h-5 text-olive mt-0.5 flex-shrink-0" />
-                            <p>A Flask <Mono>after_request</Mono> hook records every API call to the <Mono>api_request_log</Mono> table — method, path, status code, duration, and the username when authenticated.</p>
+                            <p>A Flask <Mono>after_request</Mono> hook records every API call to the <Mono>api_request_log</Mono> table, method, path, status code, duration, and the username when authenticated.</p>
                         </div>
                         <p>The hook skips CORS preflight requests and the admin endpoints themselves (so viewing the logs doesn't create noise), and it's wrapped so a logging failure can never break an actual API response. Admins can browse this live audit trail on the System Logs page.</p>
                     </div>

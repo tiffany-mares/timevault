@@ -26,7 +26,7 @@ const TABLE_META = [
 ];
 
 const fmtCount = (n: number | null | undefined) =>
-    n === null || n === undefined ? "—" : n.toLocaleString();
+    n === null || n === undefined ? "N/A" : n.toLocaleString();
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -73,12 +73,12 @@ const AdminDashboard = () => {
                 </WireBox>
                 <WireBox dashed={false} className="text-center p-4">
                     <Database className={`w-5 h-5 mx-auto mb-2 ${status && !dbConnected ? "text-rust" : "text-olive"}`} />
-                    <p className="text-lg font-mono font-bold">{status ? (dbConnected ? tableCount : "Offline") : "—"}</p>
+                    <p className="text-lg font-mono font-bold">{status ? (dbConnected ? tableCount : "Offline") : "N/A"}</p>
                     <p className="text-xs text-muted-foreground font-body">Database Tables</p>
                 </WireBox>
                 <WireBox dashed={false} className="text-center p-4">
                     <Brain className="w-5 h-5 text-olive mx-auto mb-2" />
-                    <p className="text-lg font-mono font-bold">{mlCount ?? "—"}</p>
+                    <p className="text-lg font-mono font-bold">{mlCount ?? "N/A"}</p>
                     <p className="text-xs text-muted-foreground font-body">ML Models</p>
                 </WireBox>
                 <WireBox dashed={false} className="text-center p-4">
@@ -94,7 +94,7 @@ const AdminDashboard = () => {
                     <span className="font-mono text-foreground">ww1_db</span>{" "}
                     ). Record counts below are live, fetched from{" "}
                     <span className="font-mono text-foreground">/api/admin/status</span>.
-                    {statusError && <span className="text-rust"> Backend unreachable — counts unavailable.</span>}
+                    {statusError && <span className="text-rust"> Backend unreachable, counts unavailable.</span>}
                     {status && !dbConnected && <span className="text-rust"> Database connection failed: {status.database.error}</span>}
                 </p>
                 <div className="space-y-3">
