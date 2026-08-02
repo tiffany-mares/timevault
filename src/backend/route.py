@@ -3,7 +3,8 @@ import os
 import sys
 import json
 import importlib.util
-from flask import Flask, request, jsonify
+import time
+from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -238,6 +239,51 @@ def _get_user_from_token():
         return None
     payload = decode_token(auth_header[7:])
     return payload
+
+# --- API request logging -----------------------------------------------------
+
+@app.before_request
+def _start_request_timer():
+    g.request_start = time.perf_counter()
+
+
+def _should_log_request():
+    """Only log real API traffic; skip CORS preflight and admin self-noise."""
+    if request.method in ("OPTIONS", "HEAD"):
+        return False
+    if not request.path.startswith("/api/"):
+        return False
+    if request.path.startswith("/api/admin/"):
+        return False
+    return True
+
+
+@app.after_request
+def _log_api_request(response):
+    # Never log during pytest runs unless a test explicitly opts in.
+    if app.config.get("TESTING") and not app.config.get("LOG_REQUESTS_IN_TESTS"):
+        return response
+    if not _should_log_request():
+        return response
+    try:
+        start = getattr(g, "request_start", None)
+        duration_ms = (time.perf_counter() - start) * 1000.0 if start is not None else 0.0
+        payload = _get_user_from_token()
+        username = payload.get("username") if payload else None
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO api_request_log (method, path, status_code, duration_ms, username) "
+            "VALUES (%s, %s, %s, %s, %s)",
+            (request.method, request.path, response.status_code, duration_ms, username),
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception:
+        # Logging must never break or alter an API response.
+        pass
+    return response
 
 @app.route('/api/reports', methods=['GET'])
 def get_reports():
