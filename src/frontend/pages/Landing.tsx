@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { WireButton } from "@/components/wireframe";
 import { PageLayout } from "@/components/PageLayout";
 import logo from "@/assets/timevault-logo.png";
+import authBg from "@/assets/background.jpg";
 
 export default function Landing() {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function Landing() {
     };
 
     return (
-      <PageLayout code="P-01" centered showBackToMenu={false} showHeader={false} showFooter={false}>
+      <PageLayout code="P-01" centered showBackToMenu={false} showHeader={false} showFooter={false} backgroundImage={authBg}>
         <div className="w-full max-w-md text-center">
             <div className="h-1.5 bg-gradient-to-r from-olive via-gold to-rust rounded-t-md" />
 
