@@ -32,7 +32,7 @@ export const PageLayout = ({
 
     if (centered) {
       return (
-          <div className="min-h-screen bg-gradient-to-br from-background via-background to-parchment-dark/40 flex items-center justify-center p-4">
+          <div className="min-h-screen app-bg flex items-center justify-center p-4">
             
             <ThemeToggleFloat />
             {children}
@@ -41,7 +41,7 @@ export const PageLayout = ({
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-parchment-dark/30 p-4 md:p-6">
+      <div className="min-h-screen app-bg p-4 md:p-6">
         
           {showHeader && (headerOverride || <AppHeader />)}
 

@@ -116,6 +116,29 @@
 }
 
 @layer components {
+  /* Archival "ledger paper" backdrop: a fine grid with heavier major lines,
+     plus soft warm/cool corner tints for depth. Uses theme tokens so it
+     adapts to light and dark automatically. Kept very low-alpha to stay
+     behind data-dense content without hurting readability. */
+  .app-bg {
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(circle at 12% 18%, hsl(var(--gold) / 0.07), transparent 42%),
+      radial-gradient(circle at 88% 84%, hsl(var(--teal) / 0.06), transparent 46%),
+      linear-gradient(to right, hsl(var(--olive) / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--olive) / 0.06) 1px, transparent 1px),
+      linear-gradient(to right, hsl(var(--olive) / 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--olive) / 0.03) 1px, transparent 1px);
+    background-size:
+      100% 100%,
+      100% 100%,
+      180px 180px,
+      180px 180px,
+      36px 36px,
+      36px 36px;
+    background-attachment: fixed;
+  }
+
   .panel {
     @apply bg-card border border-border rounded-md p-5 shadow-sm transition-all duration-200;
   }
