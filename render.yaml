@@ -43,7 +43,7 @@ services:
       # The /api rule MUST come before the SPA fallback.
       - type: rewrite
         source: /api/*
-        destination: https://timevault-api.onrender.com/api/*
+        destination: https://timevault-api-10ad.onrender.com/api/*
       - type: rewrite
         source: /*
         destination: /index.html
