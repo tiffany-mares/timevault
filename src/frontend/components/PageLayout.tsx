@@ -16,6 +16,7 @@ interface PageLayoutProps {
     showFooter?: boolean;
     centered?: boolean;
     headerOverride?: React.ReactNode;
+    backgroundImage?: string;
 }
 
 export const PageLayout = ({
@@ -27,13 +28,26 @@ export const PageLayout = ({
   showHeader = true, showFooter = true,
   centered = false,
   headerOverride,
+  backgroundImage,
 }: PageLayoutProps) => {
     const navigate = useNavigate();
 
     if (centered) {
+      // When a backgroundImage is given (auth pages), use it as a full-bleed
+      // cover with a theme-tinted scrim for legibility; otherwise the grid.
+      const bgStyle = backgroundImage
+        ? {
+            backgroundImage: `linear-gradient(hsl(var(--background) / 0.55), hsl(var(--background) / 0.55)), url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }
+        : undefined;
       return (
-          <div className="min-h-screen app-bg flex items-center justify-center p-4">
-            
+          <div
+            className={`min-h-screen flex items-center justify-center p-4 ${backgroundImage ? "" : "app-bg"}`}
+            style={bgStyle}
+          >
+
             <ThemeToggleFloat />
             {children}
           </div>

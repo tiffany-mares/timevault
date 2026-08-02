@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/timevault-logo.png";
+import authBg from "@/assets/background.jpg";
 import { WireButton, WireInput } from "@/components/wireframe";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -44,7 +45,7 @@ const Register = () => {
     };
 
     return (
-        <PageLayout code="P-16" centered showBackToMenu={false} showHeader={false} showFooter={false}>
+        <PageLayout code="P-16" centered showBackToMenu={false} showHeader={false} showFooter={false} backgroundImage={authBg}>
             <div className="panel w-full max-w-sm text-center py-10 px-8 shadow-lg">
                 <img src={logo} alt="TimeVault Logo" className="w-10 h-10 mx-auto mb-4 object-contain" />
                 <h1 className="text-lg font-serif font-bold tracking-wide mb-2">Create Account</h1>

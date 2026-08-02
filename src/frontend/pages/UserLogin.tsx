@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { WireButton, WireInput } from "@/components/wireframe";
 import logo from "@/assets/timevault-logo.png";
+import authBg from "@/assets/background.jpg";
 
 function UserLogin() {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ function UserLogin() {
     };
 
     return (
-        <PageLayout code="P-15" centered showBackToMenu={false} showHeader={false} showFooter={false}>
+        <PageLayout code="P-15" centered showBackToMenu={false} showHeader={false} showFooter={false} backgroundImage={authBg}>
             <div className="panel w-full max-w-sm text-center py-10 px-8 shadow-lg">
                 <img src={logo} alt="TimeVault Logo" className="w-10 h-10 mx-auto mb-4 object-contain" />
                 <h1 className="text-lg font-serif font-bold tracking-wide mb-2">Sign In</h1>
