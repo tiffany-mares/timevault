@@ -80,7 +80,7 @@ function UserLogin() {
                         Register
                     </span>
                 </p>
-                <WireButton onClick={() => navigate("/")}>Back to Sign In</WireButton>
+                <WireButton onClick={() => navigate("/")}>Back to Landing Page</WireButton>
             </div>
         </PageLayout>
     );
