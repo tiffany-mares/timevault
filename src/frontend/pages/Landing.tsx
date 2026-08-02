@@ -20,7 +20,7 @@ export default function Landing() {
         <div className="w-full max-w-md text-center">
             <div className="h-1.5 bg-gradient-to-r from-olive via-gold to-rust rounded-t-md" />
 
-            <GlassCard className="block rounded-t-none rounded-b-2xl py-14 px-10 shadow-xl border-t-0 bg-card/45 border-border/40 text-foreground">
+            <GlassCard className="block rounded-t-none rounded-b-2xl py-14 px-10 shadow-xl border-t-0 bg-card/45 border-border/40 text-foreground backdrop-blur-none">
               <img src={logo} alt="TimeVault Technologies logo" className="w-20 h-20 mx-auto mb-5" />
               <h1 className="text-2xl font-serif font-bold tracking-wide mb-2 text-navy">TimeVault Technologies</h1>
               <p className="text-sm text-gold font-body font-medium mb-2">
