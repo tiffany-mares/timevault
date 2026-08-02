@@ -185,7 +185,7 @@ The main menu has five modules:
 
 ## Authentication
 
-The system uses JWT tokens with a 24-hour expiry. Passwords are hashed with Werkzeug's `generate_password_hash` before storage. There are three auth endpoints:
+The system uses JWT tokens with a 24-hour expiry. Passwords are hashed with Werkzeug's `generate_password_hash` before storage. There are four auth endpoints:
 
 - `/api/auth/register` - creates a new viewer account
 - `/api/auth/login` - viewer login (rejects admin accounts)
@@ -193,6 +193,8 @@ The system uses JWT tokens with a 24-hour expiry. Passwords are hashed with Werk
 - `/api/auth/verify` - validates an existing token
 
 Tokens are stored in `localStorage` and verified on page load. If the backend is unreachable, the existing user state is preserved so the UI doesn't break.
+
+Admin-only endpoints under `/api/admin/*` return 401 without a token and 403 for non-admin tokens; the frontend additionally guards all `/admin-*` routes and redirects non-admins to the admin login page. Every API request (except CORS preflights and `/api/admin/*` calls) is automatically recorded to the `api_request_log` table by a Flask `after_request` hook and is viewable on the admin System Logs page.
 
 ## Project Structure
 
@@ -261,6 +263,11 @@ TimeVault/
 | POST | `/api/run-decision-tree` | Train and return a decision tree with selected features |
 | POST | `/api/run-logistic-regression` | Train and return logistic regression coefficients |
 | POST | `/api/run-naive-bayes` | Run Naive Bayes pattern discovery |
+| GET | `/api/reports` | List the authenticated user's saved reports |
+| POST | `/api/reports` | Save a report to the user dashboard |
+| DELETE | `/api/reports/<id>` | Delete one of the user's saved reports |
+| GET | `/api/admin/status` | Admin only: DB health, live table row counts, ML script availability |
+| GET | `/api/admin/logs` | Admin only: recent API request log entries (`limit` param, default 100, max 500) |
 
 ## Available Scripts
 
