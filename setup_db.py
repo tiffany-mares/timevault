@@ -168,6 +168,11 @@ def drop_tables(conn_args: dict):
     print_ok("Dropped ww1_enlistment")
     cursor.execute("DROP TABLE IF EXISTS ww1_court_martial;")
     print_ok("Dropped ww1_court_martial")
+    cursor.execute("DROP TABLE IF EXISTS api_request_log;")
+    print_ok("Dropped api_request_log")
+    # user_reports references app_user, so it must be dropped before app_user
+    cursor.execute("DROP TABLE IF EXISTS user_reports;")
+    print_ok("Dropped user_reports")
     cursor.execute("DROP TABLE IF EXISTS app_user;")
     print_ok("Dropped app_user")
 

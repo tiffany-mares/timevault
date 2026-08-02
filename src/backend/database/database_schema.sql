@@ -46,6 +46,19 @@ CREATE TABLE user_reports (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Stores one row per API request, written by the Flask after_request hook --
+CREATE TABLE api_request_log (
+    id SERIAL PRIMARY KEY,
+    ts TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    method VARCHAR(10) NOT NULL,
+    path TEXT NOT NULL,
+    status_code INT NOT NULL,
+    duration_ms DOUBLE PRECISION NOT NULL,
+    username TEXT
+);
+
+CREATE INDEX idx_api_request_log_ts ON api_request_log (ts DESC);
+
 -- This table stores the result of joining enlistment and court martial records
 CREATE TABLE joined_courtmartialled_soldiers AS
 SELECT DISTINCT e.* FROM ww1_enlistment e
