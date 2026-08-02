@@ -13,7 +13,7 @@ interface NavItem {
 
 const adminNav: NavItem[] = [
   { label: "Dashboard", path: "/admin-dashboard", matchPaths: ["/admin-dashboard"] },
-  { label: "API Reference", path: "/admin-logs", matchPaths: ["/admin-logs"] },
+  { label: "System Logs", path: "/admin-logs", matchPaths: ["/admin-logs"] },
   { label: "System Metadata", path: "/admin-metadata", matchPaths: ["/admin-metadata"] },
   { label: "Export", path: "/admin-export", matchPaths: ["/admin-export"] },
 ];
