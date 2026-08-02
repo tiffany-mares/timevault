@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Menu, X, Moon, Sun, LogIn, LogOut } from "lucide-react";
 import logo from "@/assets/timevault-logo.png";
 
 interface NavItem {
@@ -27,8 +28,9 @@ const userNav: NavItem[] = [
 export const AppHeader = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, signOut } = useAuth();
     const { mode, setMode } = useTheme();
+    const { toast } = useToast();
     const [menuOpen, setMenuOpen] = useState(false);
     const headerRef = useRef<HTMLElement>(null);
 
@@ -48,6 +50,15 @@ export const AppHeader = () => {
     };
     const toggle = () => {
         setMode(mode === "light" ? "dark" : "light");
+    };
+    const handleAuth = async () => {
+      if (isAuthenticated) {
+        await signOut();
+        toast({ title: "Signed out" });
+        navigate("/");
+      } else {
+        navigate("/user-login");
+      }
     };
 
     return (
@@ -94,6 +105,20 @@ export const AppHeader = () => {
                     <><Sun className="w-3.5 h-3.5" /><span className="hidden sm:inline">Light Mode</span></>
                 ) : (
                     <><Moon className="w-3.5 h-3.5" /><span className="hidden sm:inline">Night Mode</span></>
+                )}
+              </button>
+              <button
+                  onClick={handleAuth}
+                  className={cn(
+                    "flex items-center gap-1.5 text-xs font-body px-2.5 py-1.5 rounded-sm transition-all",
+                    "text-parchment/70 hover:text-parchment hover:bg-parchment/10"
+                  )}
+                  title={isAuthenticated ? "Sign out" : "Sign in"}
+              >
+                {isAuthenticated ? (
+                    <><LogOut className="w-3.5 h-3.5" /><span className="hidden sm:inline">Sign Out</span></>
+                ) : (
+                    <><LogIn className="w-3.5 h-3.5" /><span className="hidden sm:inline">Sign In</span></>
                 )}
               </button>
               <button
