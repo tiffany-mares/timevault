@@ -1,0 +1,49 @@
+databases:
+  - name: timevault-db
+    databaseName: ww1_db
+    plan: basic-256mb          # smallest always-on paid Postgres; confirm name in dashboard
+
+services:
+  # ---- Flask + ML backend ----
+  - type: web
+    name: timevault-api
+    runtime: python
+    plan: starter              # always-on, 512 MB
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir src/backend route:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: MPLBACKEND         # headless matplotlib for the naive_bayes import
+        value: Agg
+      - key: JWT_SECRET
+        generateValue: true     # Render generates a strong persistent secret
+      - key: DB_HOST
+        fromDatabase: { name: timevault-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: timevault-db, property: port }
+      - key: DB_USER
+        fromDatabase: { name: timevault-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: timevault-db, property: password }
+      - key: DB_NAME
+        fromDatabase: { name: timevault-db, property: database }
+
+  # ---- React static frontend ----
+  - type: web
+    name: timevault-web
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+    routes:
+      # Proxy API calls to the backend so the browser stays same-origin (no CORS).
+      # The /api rule MUST come before the SPA fallback.
+      - type: rewrite
+        source: /api/*
+        destination: https://timevault-api.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html

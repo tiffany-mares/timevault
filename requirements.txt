@@ -17,5 +17,8 @@ flask-cors
 PyJWT
 werkzeug
 
+# Production WSGI server
+gunicorn
+
 # Testing
 pytest
