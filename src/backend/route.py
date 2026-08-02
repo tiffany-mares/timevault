@@ -1,0 +1,313 @@
+# This file will be for connecting the backend database operations to the frontend. 
+import os
+import sys
+import json
+import importlib.util
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+script_dir = os.path.dirname(os.path.realpath(__file__))
+subdirectory_path = os.path.join(script_dir, 'database')
+subdirectory_second_path = os.path.join(script_dir, 'signin')
+dt_script_path = os.path.join(script_dir, 'machine-learning', 'decision-tree', 'decision-tree.py')
+lr_script_path = os.path.join(script_dir, 'machine-learning', 'logistic-regression', 'logistic_regression.py')
+nb_script_path = os.path.join(script_dir, 'machine-learning', 'naive-bayes', 'naive_bayes.py')
+sys.path.append(subdirectory_path)
+sys.path.append(subdirectory_second_path)
+
+from database.compare_page_database import (
+    single_compare_list, single_compare_year,
+    single_compare_place_of_birth, single_compare_marital_status,
+    double_compare, double_compare_single_year, double_compare_both_years,
+    double_compare_birthplace, double_compare_birthplace_and_year,
+    double_compare_marital, double_compare_marital_and_year,
+    double_compare_birthplace_and_marital
+)
+from signin import auth_bp, decode_token
+from database.offence_trends_page_database import get_common_offences, get_offence_distribution, get_trends_over_time, get_breakdown_by_group
+from helper import get_db_connection
+
+app = Flask(__name__)
+CORS(app)
+app.register_blueprint(auth_bp)
+
+COL_MAP = {
+    'Rank': 'Rank',
+    'Unit Type': 'Unit_Type',
+    'Place of Birth': 'Place_of_Birth',
+    'Occupation': 'Occupation',
+    'Marital Status': 'Marital_Status',
+    'Enlistment Year': 'Enlistment_Year',
+    'Year of Birth': 'Year_of_Birth',
+}
+
+@app.route('/api/trends', methods=['POST'])
+def offence_trends():
+    data = request.json
+
+    raw_start = data.get('yearStart', '')
+    raw_end = data.get('yearEnd', '')
+    year_start = int(raw_start) if raw_start else 1914
+    year_end = int(raw_end) if raw_end else 1918
+    ranks = data.get('ranks', [])
+    units = data.get('units', [])
+    offence_codes = data.get('offenceCodes', [])
+
+    return jsonify({
+        'commonOffences': get_common_offences(year_start, year_end, ranks, units, offence_codes),
+        'distribution': get_offence_distribution(year_start, year_end, ranks, units, offence_codes),
+        'trendsOverTime': get_trends_over_time(year_start, year_end, ranks, units, offence_codes),
+        'byGroup': {
+            'rank': get_breakdown_by_group(year_start, year_end, ranks, units, offence_codes, 'rank'),
+            'unit': get_breakdown_by_group(year_start, year_end, ranks, units, offence_codes, 'unit'),
+            'occupation': get_breakdown_by_group(year_start, year_end, ranks, units, offence_codes, 'occupation'),
+            'birthplace': get_breakdown_by_group(year_start, year_end, ranks, units, offence_codes, 'birthplace'),
+        }
+    })
+
+@app.route('/api/compare', methods=['POST'])
+def offence_compare():
+  try:
+    data = request.json
+    mode = data['mode']
+    cat1 = data['cat1']
+    
+    group_a = data['groupA']
+    group_b = data['groupB']
+
+    cat2 = data.get('cat2', '')
+
+    if mode == 'double':
+        # Both years
+        if cat1 in ('Enlistment Year', 'Year of Birth') and cat2 in ('Enlistment Year', 'Year of Birth'):
+            result_a = double_compare_both_years(group_a['start'], group_a['end'], group_a['start2'], group_a['end2'], group_a['offences'])
+            result_b = double_compare_both_years(group_b['start'], group_b['end'], group_b['start2'], group_b['end2'], group_b['offences'])
+        # Birthplace + year
+        elif cat1 == 'Place of Birth' and cat2 in ('Enlistment Year', 'Year of Birth'):
+            result_a = double_compare_birthplace_and_year(group_a['cat1Values'], group_a['start'], group_a['end'], COL_MAP[cat2], group_a['offences'])
+            result_b = double_compare_birthplace_and_year(group_b['cat1Values'], group_b['start'], group_b['end'], COL_MAP[cat2], group_b['offences'])
+        elif cat2 == 'Place of Birth' and cat1 in ('Enlistment Year', 'Year of Birth'):
+            result_a = double_compare_birthplace_and_year(group_a['cat2Values'], group_a['start'], group_a['end'], COL_MAP[cat1], group_a['offences'])
+            result_b = double_compare_birthplace_and_year(group_b['cat2Values'], group_b['start'], group_b['end'], COL_MAP[cat1], group_b['offences'])
+        # Marital + year
+        elif cat1 == 'Marital Status' and cat2 in ('Enlistment Year', 'Year of Birth'):
+            result_a = double_compare_marital_and_year(group_a['cat1Values'], group_a['start'], group_a['end'], COL_MAP[cat2], group_a['offences'])
+            result_b = double_compare_marital_and_year(group_b['cat1Values'], group_b['start'], group_b['end'], COL_MAP[cat2], group_b['offences'])
+        elif cat2 == 'Marital Status' and cat1 in ('Enlistment Year', 'Year of Birth'):
+            result_a = double_compare_marital_and_year(group_a['cat2Values'], group_a['start'], group_a['end'], COL_MAP[cat1], group_a['offences'])
+            result_b = double_compare_marital_and_year(group_b['cat2Values'], group_b['start'], group_b['end'], COL_MAP[cat1], group_b['offences'])
+        # Birthplace + marital
+        elif cat1 == 'Place of Birth' and cat2 == 'Marital Status':
+            result_a = double_compare_birthplace_and_marital(group_a['cat1Values'], group_a['cat2Values'], group_a['offences'])
+            result_b = double_compare_birthplace_and_marital(group_b['cat1Values'], group_b['cat2Values'], group_b['offences'])
+        elif cat2 == 'Place of Birth' and cat1 == 'Marital Status':
+            result_a = double_compare_birthplace_and_marital(group_a['cat2Values'], group_a['cat1Values'], group_a['offences'])
+            result_b = double_compare_birthplace_and_marital(group_b['cat2Values'], group_b['cat1Values'], group_b['offences'])
+        # Birthplace + other
+        elif cat1 == 'Place of Birth':
+            result_a = double_compare_birthplace(group_a['cat1Values'], group_a['cat2Values'], group_a['offences'], COL_MAP[cat2])
+            result_b = double_compare_birthplace(group_b['cat1Values'], group_b['cat2Values'], group_b['offences'], COL_MAP[cat2])
+        elif cat2 == 'Place of Birth':
+            result_a = double_compare_birthplace(group_a['cat2Values'], group_a['cat1Values'], group_a['offences'], COL_MAP[cat1])
+            result_b = double_compare_birthplace(group_b['cat2Values'], group_b['cat1Values'], group_b['offences'], COL_MAP[cat1])
+        # Marital + other
+        elif cat1 == 'Marital Status':
+            result_a = double_compare_marital(group_a['cat1Values'], group_a['cat2Values'], group_a['offences'], COL_MAP[cat2])
+            result_b = double_compare_marital(group_b['cat1Values'], group_b['cat2Values'], group_b['offences'], COL_MAP[cat2])
+        elif cat2 == 'Marital Status':
+            result_a = double_compare_marital(group_a['cat2Values'], group_a['cat1Values'], group_a['offences'], COL_MAP[cat1])
+            result_b = double_compare_marital(group_b['cat2Values'], group_b['cat1Values'], group_b['offences'], COL_MAP[cat1])
+        # Year + other
+        elif cat1 in ('Enlistment Year', 'Year of Birth'):
+            result_a = double_compare_single_year(group_a['start'], group_a['end'], COL_MAP[cat1], group_a['cat2Values'], group_a['offences'], COL_MAP[cat2])
+            result_b = double_compare_single_year(group_b['start'], group_b['end'], COL_MAP[cat1], group_b['cat2Values'], group_b['offences'], COL_MAP[cat2])
+        elif cat2 in ('Enlistment Year', 'Year of Birth'):
+            result_a = double_compare_single_year(group_a['start'], group_a['end'], COL_MAP[cat2], group_a['cat1Values'], group_a['offences'], COL_MAP[cat1])
+            result_b = double_compare_single_year(group_b['start'], group_b['end'], COL_MAP[cat2], group_b['cat1Values'], group_b['offences'], COL_MAP[cat1])
+        # Everything else
+        else:
+            result_a = double_compare(group_a['cat1Values'], group_a['cat2Values'], group_a['offences'], COL_MAP[cat1], COL_MAP[cat2])
+            result_b = double_compare(group_b['cat1Values'], group_b['cat2Values'], group_b['offences'], COL_MAP[cat1], COL_MAP[cat2])
+    # Single comparisons
+    else:
+        # Year
+        if cat1 in ('Enlistment Year', 'Year of Birth'):
+            result_a = single_compare_year(group_a['start'], group_a['end'], COL_MAP[cat1], group_a['offences'])
+            result_b = single_compare_year(group_b['start'], group_b['end'], COL_MAP[cat1], group_b['offences'])
+        # Place of Birth
+        elif cat1 == 'Place of Birth':
+            result_a = single_compare_place_of_birth(group_a['cat1Values'], group_a['offences'])
+            result_b = single_compare_place_of_birth(group_b['cat1Values'], group_b['offences'])
+        # Marital Status
+        elif cat1 == 'Marital Status':
+            result_a = single_compare_marital_status(group_a['cat1Values'], group_a['offences'])
+            result_b = single_compare_marital_status(group_b['cat1Values'], group_b['offences'])
+        # Everything else
+        elif cat1 in ('Rank', 'Unit Type', 'Occupation'):
+            result_a = single_compare_list(group_a['cat1Values'], COL_MAP[cat1], group_a['offences'])
+            result_b = single_compare_list(group_b['cat1Values'], COL_MAP[cat1], group_b['offences'])
+        else:
+            return jsonify({'error': f'Unknown category: {cat1}'}), 400
+
+    return jsonify({'groupA': result_a, 'groupB': result_b})
+  except KeyError as e:
+    return jsonify({'error': f'Missing required field: {e}'}), 400
+  except Exception as e:
+    return jsonify({'error': str(e)}), 500
+
+_ALLOWED_DT_FEATURES = {
+    "Rank", "Unit Type", "Birthplace", "Occupation",
+    "Marital Status", "Enlistment Year", "Birth Year",
+}
+
+@app.route('/api/run-decision-tree', methods=['POST'])
+def run_decision_tree_trigger():
+    data = request.get_json(silent=True) or {}
+    features = data.get('features', None)
+
+    if features is not None:
+        if not isinstance(features, list):
+            return jsonify({'error': 'features must be a list'}), 400
+        invalid = [f for f in features if f not in _ALLOWED_DT_FEATURES]
+        if invalid:
+            return jsonify({'error': f'Invalid features: {invalid}'}), 400
+        if len(features) == 0:
+            return jsonify({'error': 'At least one feature is required'}), 400
+
+    spec = importlib.util.spec_from_file_location('decision_tree', dt_script_path)
+    dt_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dt_module)
+
+    result = dt_module.run_decision_tree(selected_features=features)
+    return jsonify(result)
+
+_ALLOWED_LR_FEATURES = {
+    "Rank", "Unit Type", "Birthplace", "Occupation",
+    "Marital Status", "Enlistment Year", "Birth Year",
+}
+
+@app.route('/api/run-logistic-regression', methods=['POST'])
+def run_logistic_regression_trigger():
+    data = request.get_json(silent=True) or {}
+    features = data.get('features', None)
+
+    if features is not None:
+        if not isinstance(features, list):
+            return jsonify({'error': 'features must be a list'}), 400
+        invalid = [f for f in features if f not in _ALLOWED_LR_FEATURES]
+        if invalid:
+            return jsonify({'error': f'Invalid features: {invalid}'}), 400
+        if len(features) == 0:
+            return jsonify({'error': 'At least one feature is required'}), 400
+
+    spec = importlib.util.spec_from_file_location('logistic_regression', lr_script_path)
+    lr_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(lr_module)
+
+    result = lr_module.run(selected_feature_names=features)
+    return jsonify(result)
+
+_ALLOWED_NB_FEATURES = {
+    "Rank", "Unit Type", "Enlistment Year",
+}
+
+@app.route('/api/run-naive-bayes', methods=['POST'])
+def run_naive_bayes_trigger():
+    data = request.get_json(silent=True) or {}
+    features = data.get('features', None)
+
+    if features is not None:
+        if not isinstance(features, list):
+            return jsonify({'error': 'features must be a list'}), 400
+        invalid = [f for f in features if f not in _ALLOWED_NB_FEATURES]
+        if invalid:
+            return jsonify({'error': f'Invalid features: {invalid}'}), 400
+        if len(features) == 0:
+            return jsonify({'error': 'At least one feature is required'}), 400
+
+    spec = importlib.util.spec_from_file_location('naive_bayes', nb_script_path)
+    nb_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(nb_module)
+
+    result = nb_module.run(selected_features=features)
+    return jsonify(result)
+
+def _get_user_from_token():
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        return None
+    payload = decode_token(auth_header[7:])
+    return payload
+
+@app.route('/api/reports', methods=['GET'])
+def get_reports():
+    payload = _get_user_from_token()
+    if not payload:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT id, name, type, created_at FROM user_reports WHERE user_id = %s ORDER BY created_at DESC",
+            (payload['user_id'],)
+        )
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        reports = [
+            {"id": str(r[0]), "name": r[1], "type": r[2], "created_at": r[3].isoformat()}
+            for r in rows
+        ]
+        return jsonify(reports), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/reports', methods=['POST'])
+def create_report():
+    payload = _get_user_from_token()
+    if not payload:
+        return jsonify({'error': 'Unauthorized'}), 401
+    data = request.json
+    name = data.get('name', '').strip()
+    report_type = data.get('type', '').strip()
+    if not name or not report_type:
+        return jsonify({'error': 'name and type are required'}), 400
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO user_reports (user_id, name, type) VALUES (%s, %s, %s) RETURNING id, created_at",
+            (payload['user_id'], name, report_type)
+        )
+        row = cur.fetchone()
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"id": str(row[0]), "name": name, "type": report_type, "created_at": row[1].isoformat()}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/reports/<int:report_id>', methods=['DELETE'])
+def delete_report(report_id):
+    payload = _get_user_from_token()
+    if not payload:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "DELETE FROM user_reports WHERE id = %s AND user_id = %s",
+            (report_id, payload['user_id'])
+        )
+        conn.commit()
+        deleted = cur.rowcount
+        cur.close()
+        conn.close()
+        if deleted == 0:
+            return jsonify({'error': 'Report not found'}), 404
+        return jsonify({'ok': True}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5001)

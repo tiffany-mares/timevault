@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 35 30% 92%;
+    --foreground: 220 35% 18%;
+
+    --card: 35 25% 97%;
+    --card-foreground: 220 35% 18%;
+
+    --popover: 35 28% 97%;
+    --popover-foreground: 220 35% 18%;
+
+    --primary: 220 45% 25%;
+    --primary-foreground: 35 30% 95%;
+
+    --secondary: 25 18% 90%;
+    --secondary-foreground: 220 40% 22%;
+
+    --muted: 30 12% 91%;
+    --muted-foreground: 220 15% 42%;
+
+    --accent: 25 55% 55%;
+    --accent-foreground: 220 40% 12%;
+
+    --destructive: 8 60% 42%;
+    --destructive-foreground: 35 30% 95%;
+
+    --border: 25 15% 78%;
+    --input: 25 18% 85%;
+    --ring: 220 45% 25%;
+
+    --radius: 6px;
+
+    --navy: 220 45% 25%;
+    --olive: 220 40% 30%;
+    --olive-light: 220 30% 42%;
+    --parchment: 35 30% 95%;
+    --parchment-dark: 35 20% 88%;
+    --rust: 8 60% 42%;
+    --gold: 25 55% 55%;
+    --gold-light: 25 45% 72%;
+
+    --teal: 200 30% 35%;
+    --burgundy: 345 35% 35%;
+    --copper: 25 55% 50%;
+    --sage: 180 12% 52%;
+    --slate-blue: 220 25% 45%;
+
+    --chart-1: 220 45% 25%;
+    --chart-2: 25 55% 55%;
+    --chart-3: 8 60% 42%;
+    --chart-4: 200 30% 35%;
+    --chart-5: 220 25% 45%;
+    --chart-6: 345 35% 35%;
+    --chart-7: 25 50% 45%;
+  }
+
+  .dark {
+    --background: 220 25% 10%;
+    --foreground: 30 20% 90%;
+    --card: 220 22% 14%;
+    --card-foreground: 30 20% 90%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 30 20% 90%;
+    --primary: 25 50% 55%;
+    --primary-foreground: 220 25% 8%;
+    --secondary: 220 18% 20%;
+    --secondary-foreground: 30 20% 85%;
+    --muted: 220 18% 18%;
+    --muted-foreground: 30 12% 60%;
+    --accent: 25 45% 50%;
+    --accent-foreground: 220 25% 10%;
+    --destructive: 8 55% 50%;
+    --destructive-foreground: 30 20% 95%;
+    --border: 220 18% 25%;
+    --input: 220 18% 22%;
+    --ring: 25 50% 55%;
+    --navy: 220 30% 35%;
+    --olive: 220 25% 40%;
+    --olive-light: 220 20% 50%;
+    --parchment: 220 25% 10%;
+    --parchment-dark: 220 22% 16%;
+    --rust: 8 55% 50%;
+    --gold: 25 45% 55%;
+    --gold-light: 25 40% 42%;
+    --teal: 200 25% 45%;
+    --burgundy: 345 30% 45%;
+    --copper: 25 50% 58%;
+    --sage: 180 10% 50%;
+    --slate-blue: 220 22% 55%;
+    --chart-1: 220 30% 35%;
+    --chart-2: 25 50% 55%;
+    --chart-3: 8 55% 50%;
+    --chart-4: 200 25% 45%;
+    --chart-5: 220 22% 55%;
+    --chart-6: 345 30% 45%;
+    --chart-7: 25 50% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply bg-card border border-border rounded-md p-5 shadow-sm transition-all duration-200;
+  }
+
+  .panel-header {
+    @apply text-sm font-body font-semibold uppercase tracking-widest text-muted-foreground mb-3;
+  }
+
+  .insight-bar {
+    @apply border-l-[3px] border-gold bg-gold/5 p-3;
+  }
+
+  .nav-bar {
+    @apply bg-gradient-to-r from-olive to-navy text-parchment shadow-md;
+  }
+
+  .stat-card {
+    @apply panel text-center;
+  }
+}

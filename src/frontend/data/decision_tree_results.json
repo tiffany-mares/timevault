@@ -1,0 +1,337 @@
+{
+  "tree_lines": [
+    "Enlistment Year ≤ 1917?",
+    "├── Yes: Court martial rate = 2.0%",
+    "│   ├── Enlistment Year ≤ 1915?",
+    "│   │   ├── Yes: Court martial rate = 2.8%",
+    "│   │   │   ├── Enlistment Year ≤ 1914?",
+    "│   │   │   │   ├── Yes: Court martial rate = 4.6%",
+    "│   │   │   │   │   ├── Occupation = Professional & White-Collar?",
+    "│   │   │   │   │   │   ├── Yes: Court martial rate = 2.3%",
+    "│   │   │   │   │   │   │   ├── Birth Year ≤ 1890?",
+    "│   │   │   │   │   │   │   │   ├── Yes: Court martial rate = 1.7%",
+    "│   │   │   │   │   │   │   │   └── No: Court martial rate = 3.2%",
+    "│   │   │   │   │   │   └── No: Court martial rate = 5.1%",
+    "│   │   │   │   │   │       ├── Place of Birth = England?",
+    "│   │   │   │   │   │       │   ├── Yes: Court martial rate = 4.4%",
+    "│   │   │   │   │   │       │   └── No: Court martial rate = 5.5%",
+    "│   │   │   │   └── No: Court martial rate = 2.1%",
+    "│   │   │   │       ├── Marital Status = Married?",
+    "│   │   │   │       │   ├── Yes: Court martial rate = 1.4%",
+    "│   │   │   │       │   │   ├── Birth Year ≤ 1876?",
+    "│   │   │   │       │   │   │   ├── Yes: Court martial rate = 0.8%",
+    "│   │   │   │       │   │   │   └── No: Court martial rate = 1.6%",
+    "│   │   │   │       │   └── No: Court martial rate = 2.4%",
+    "│   │   │   │       │       ├── Occupation = Professional & White-Collar?",
+    "│   │   │   │       │       │   ├── Yes: Court martial rate = 1.6%",
+    "│   │   │   │       │       │   └── No: Court martial rate = 2.5%",
+    "│   │   └── No: Court martial rate = 1.3%",
+    "│   │       ├── Birth Year ≤ 1878?",
+    "│   │       │   ├── Yes: Court martial rate = 0.7%",
+    "│   │       │   │   ├── Place of Birth = England?",
+    "│   │       │   │   │   ├── Yes: Court martial rate = 0.4%",
+    "│   │       │   │   │   │   ├── Occupation = Industrial & Skilled Trades?",
+    "│   │       │   │   │   │   │   ├── Yes: Court martial rate = 0.2%",
+    "│   │       │   │   │   │   │   └── No: Court martial rate = 0.6%",
+    "│   │       │   │   │   └── No: Court martial rate = 0.9%",
+    "│   │       │   │   │       ├── Marital Status = Married?",
+    "│   │       │   │   │       │   ├── Yes: Court martial rate = 0.6%",
+    "│   │       │   │   │       │   └── No: Court martial rate = 1.2%",
+    "│   │       │   └── No: Court martial rate = 1.4%",
+    "│   │       │       ├── Occupation = Professional & White-Collar?",
+    "│   │       │       │   ├── Yes: Court martial rate = 0.7%",
+    "│   │       │       │   │   ├── Marital Status = Married?",
+    "│   │       │       │   │   │   ├── Yes: Court martial rate = 0.6%",
+    "│   │       │       │   │   │   └── No: Court martial rate = 0.7%",
+    "│   │       │       │   └── No: Court martial rate = 1.5%",
+    "│   │       │       │       ├── Rank ≤ Cadet?",
+    "│   │       │       │       │   ├── Yes: Court martial rate = 1.3%",
+    "│   │       │       │       │   └── No: Court martial rate = 1.6%",
+    "└── No: Court martial rate = 0.3%",
+    "    ├── Place of Birth = Ireland?",
+    "    │   ├── Yes: Court martial rate = 1.8%",
+    "    │   └── No: Court martial rate = 0.3%",
+    "    │       ├── Enlistment Year ≤ 1918?",
+    "    │       │   ├── Yes: Court martial rate = 0.2%",
+    "    │       │   │   ├── Occupation = Agriculture?",
+    "    │       │   │   │   ├── Yes: Court martial rate = 0.1%",
+    "    │       │   │   │   │   ├── Place of Birth = Nova Scotia?",
+    "    │       │   │   │   │   │   ├── Yes: Court martial rate = 0.8%",
+    "    │       │   │   │   │   │   └── No: Court martial rate = 0.1%",
+    "    │       │   │   │   └── No: Court martial rate = 0.3%",
+    "    │       │   │   │       ├── Birth Year ≤ 1889?",
+    "    │       │   │   │       │   ├── Yes: Court martial rate = 0.2%",
+    "    │       │   │   │       │   └── No: Court martial rate = 0.4%",
+    "    │       │   └── No: Court martial rate = 1.6%"
+  ],
+  "tree_structure": {
+    "rate": 1.6,
+    "samples": 57319,
+    "question": "Enlistment Year ≤ 1917?",
+    "yes": {
+      "rate": 2.0,
+      "samples": 42470,
+      "question": "Enlistment Year ≤ 1915?",
+      "yes": {
+        "rate": 2.8,
+        "samples": 19644,
+        "question": "Enlistment Year ≤ 1914?",
+        "yes": {
+          "rate": 4.6,
+          "samples": 5294,
+          "question": "Occupation = Professional & White-Collar?",
+          "yes": {
+            "rate": 2.3,
+            "samples": 1038,
+            "question": "Birth Year ≤ 1890?",
+            "yes": {
+              "rate": 1.7,
+              "samples": 597,
+              "label": "Similar to average",
+              "ratio": 1.09
+            },
+            "no": {
+              "rate": 3.2,
+              "samples": 441,
+              "label": "2.1× more likely than average",
+              "ratio": 2.05
+            }
+          },
+          "no": {
+            "rate": 5.1,
+            "samples": 4256,
+            "question": "Place of Birth = England?",
+            "yes": {
+              "rate": 4.4,
+              "samples": 1555,
+              "label": "2.8× more likely than average",
+              "ratio": 2.82
+            },
+            "no": {
+              "rate": 5.5,
+              "samples": 2701,
+              "label": "3.5× more likely than average",
+              "ratio": 3.53
+            }
+          }
+        },
+        "no": {
+          "rate": 2.1,
+          "samples": 14350,
+          "question": "Marital Status = Married?",
+          "yes": {
+            "rate": 1.4,
+            "samples": 3555,
+            "question": "Birth Year ≤ 1876?",
+            "yes": {
+              "rate": 0.8,
+              "samples": 797,
+              "label": "1.9× less likely than average",
+              "ratio": 0.51
+            },
+            "no": {
+              "rate": 1.6,
+              "samples": 2758,
+              "label": "Similar to average",
+              "ratio": 1.03
+            }
+          },
+          "no": {
+            "rate": 2.4,
+            "samples": 10795,
+            "question": "Occupation = Professional & White-Collar?",
+            "yes": {
+              "rate": 1.6,
+              "samples": 1717,
+              "label": "Similar to average",
+              "ratio": 1.03
+            },
+            "no": {
+              "rate": 2.5,
+              "samples": 9078,
+              "label": "1.6× more likely than average",
+              "ratio": 1.6
+            }
+          }
+        }
+      },
+      "no": {
+        "rate": 1.3,
+        "samples": 22826,
+        "question": "Birth Year ≤ 1878?",
+        "yes": {
+          "rate": 0.7,
+          "samples": 2980,
+          "question": "Place of Birth = England?",
+          "yes": {
+            "rate": 0.4,
+            "samples": 1006,
+            "question": "Occupation = Industrial & Skilled Trades?",
+            "yes": {
+              "rate": 0.2,
+              "samples": 467,
+              "label": "7.8× less likely than average",
+              "ratio": 0.13
+            },
+            "no": {
+              "rate": 0.6,
+              "samples": 539,
+              "label": "2.6× less likely than average",
+              "ratio": 0.38
+            }
+          },
+          "no": {
+            "rate": 0.9,
+            "samples": 1974,
+            "question": "Marital Status = Married?",
+            "yes": {
+              "rate": 0.6,
+              "samples": 1144,
+              "label": "2.6× less likely than average",
+              "ratio": 0.38
+            },
+            "no": {
+              "rate": 1.2,
+              "samples": 830,
+              "label": "Similar to average",
+              "ratio": 0.77
+            }
+          }
+        },
+        "no": {
+          "rate": 1.4,
+          "samples": 19846,
+          "question": "Occupation = Professional & White-Collar?",
+          "yes": {
+            "rate": 0.7,
+            "samples": 3037,
+            "question": "Marital Status = Married?",
+            "yes": {
+              "rate": 0.6,
+              "samples": 497,
+              "label": "2.6× less likely than average",
+              "ratio": 0.38
+            },
+            "no": {
+              "rate": 0.7,
+              "samples": 2540,
+              "label": "2.2× less likely than average",
+              "ratio": 0.45
+            }
+          },
+          "no": {
+            "rate": 1.5,
+            "samples": 16809,
+            "question": "Rank ≤ Cadet?",
+            "yes": {
+              "rate": 1.3,
+              "samples": 2902,
+              "label": "Similar to average",
+              "ratio": 0.83
+            },
+            "no": {
+              "rate": 1.6,
+              "samples": 13907,
+              "label": "Similar to average",
+              "ratio": 1.03
+            }
+          }
+        }
+      }
+    },
+    "no": {
+      "rate": 0.3,
+      "samples": 14849,
+      "question": "Place of Birth = Ireland?",
+      "yes": {
+        "rate": 1.8,
+        "samples": 327,
+        "label": "Similar to average",
+        "ratio": 1.15
+      },
+      "no": {
+        "rate": 0.3,
+        "samples": 14522,
+        "question": "Enlistment Year ≤ 1918?",
+        "yes": {
+          "rate": 0.2,
+          "samples": 14213,
+          "question": "Occupation = Agriculture?",
+          "yes": {
+            "rate": 0.1,
+            "samples": 6002,
+            "question": "Place of Birth = Nova Scotia?",
+            "yes": {
+              "rate": 0.8,
+              "samples": 248,
+              "label": "1.9× less likely than average",
+              "ratio": 0.51
+            },
+            "no": {
+              "rate": 0.1,
+              "samples": 5754,
+              "label": "15.6× less likely than average",
+              "ratio": 0.06
+            }
+          },
+          "no": {
+            "rate": 0.3,
+            "samples": 8211,
+            "question": "Birth Year ≤ 1889?",
+            "yes": {
+              "rate": 0.2,
+              "samples": 2416,
+              "label": "7.8× less likely than average",
+              "ratio": 0.13
+            },
+            "no": {
+              "rate": 0.4,
+              "samples": 5795,
+              "label": "3.9× less likely than average",
+              "ratio": 0.26
+            }
+          }
+        },
+        "no": {
+          "rate": 1.6,
+          "samples": 309,
+          "label": "Similar to average",
+          "ratio": 1.03
+        }
+      }
+    }
+  },
+  "baseline_rate": 1.56,
+  "findings": [
+    "The model was trained on 57,319 soldiers, of whom 894 (1.6%) were court-martialled. This severe class imbalance means the model must work hard to distinguish the small minority of court-martialled soldiers from the vast majority who were not.",
+    "Feature importance ranking: Enlistment Year (78.7%), Occupation (6.5%), Birth Year (5.9%), Place of Birth (4.2%), Marital Status (3.2%), Rank (1.6%). These percentages indicate how much each feature contributes to the model's splitting decisions. Higher means the feature is more useful for separating court-martialled from non-court-martialled soldiers.",
+    "Breaking down by Rank: Corporal had the highest court martial rate at 1.8% (42 of 2,330), while Colonel had the lowest at 0.0% (0 of 96).",
+    "Breaking down by Place of Birth: Wales had the highest court martial rate at 4.2% (10 of 238), while Channel Islands had the lowest at 0.0% (0 of 39).",
+    "Breaking down by Occupation: Unknown had the highest court martial rate at 2.2% (7 of 362), while Agriculture had the lowest at 1.0% (155 of 14,797).",
+    "Breaking down by Marital Status: Not Married had the highest court martial rate at 2.1% (644 of 30,767), while Single had the lowest at 0.6% (91 of 14,640).",
+    "For Enlistment Year: soldiers with values ≤ 1916 had a court martial rate of 2.1%, compared to 0.6% for those with values > 1916.",
+    "For Birth Year: soldiers with values ≤ 1892 had a court martial rate of 1.8%, compared to 1.3% for those with values > 1892.",
+    "The model uses balanced class weighting to counteract the 98% majority class. This boosts recall (the ability to catch court-martialled soldiers) at the cost of precision, meaning more non-court-martialled soldiers get incorrectly flagged. This is a deliberate trade-off so the model does not simply predict 'not court-martialled' for everyone."
+  ],
+  "encoding_guide": null,
+  "metrics": {
+    "precision": 2,
+    "recall": 68,
+    "accuracy": 47
+  },
+  "model_info": {
+    "train_size": 45855,
+    "test_size": 11464,
+    "max_depth": 5,
+    "min_samples_leaf": 200,
+    "class_weight": "balanced",
+    "features": [
+      "Rank",
+      "Place of Birth",
+      "Occupation",
+      "Marital Status",
+      "Enlistment Year",
+      "Year of Birth"
+    ]
+  }
+}

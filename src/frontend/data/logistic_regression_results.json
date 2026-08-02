@@ -1,0 +1,112 @@
+{
+  "features_used": [
+    "Rank",
+    "Unit Type"
+  ],
+  "coefficients": [
+    {
+      "feature": "Unit Type: Unknown",
+      "value": -12.5701
+    },
+    {
+      "feature": "Rank: Captain",
+      "value": -5.2752
+    },
+    {
+      "feature": "Rank: Major",
+      "value": -4.7616
+    },
+    {
+      "feature": "Rank: Lieutenant",
+      "value": -3.8706
+    },
+    {
+      "feature": "Rank: Colonel",
+      "value": -3.8205
+    },
+    {
+      "feature": "Unit Type: Infantry",
+      "value": 3.4489
+    },
+    {
+      "feature": "Unit Type: Reserves & Training",
+      "value": 3.2622
+    },
+    {
+      "feature": "Unit Type: Cavalry & Mounted",
+      "value": -3.0863
+    },
+    {
+      "feature": "Unit Type: Service",
+      "value": 2.8748
+    },
+    {
+      "feature": "Unit Type: Engineers & Signals",
+      "value": 2.5185
+    },
+    {
+      "feature": "Unit Type: Artillery",
+      "value": 2.249
+    },
+    {
+      "feature": "Unit Type: Medical",
+      "value": 1.7154
+    },
+    {
+      "feature": "Unit Type: Forestry Corps",
+      "value": 1.2294
+    },
+    {
+      "feature": "Unit Type: Machine Gun Corps",
+      "value": 1.2054
+    },
+    {
+      "feature": "Rank: Sergeant",
+      "value": 0.9478
+    },
+    {
+      "feature": "Rank: Corporal",
+      "value": 0.8276
+    },
+    {
+      "feature": "Rank: General",
+      "value": -0.5113
+    },
+    {
+      "feature": "Rank: Sergeant-Major",
+      "value": 0.4899
+    },
+    {
+      "feature": "Rank: Private",
+      "value": 0.4244
+    },
+    {
+      "feature": "Unit Type: Headquarters",
+      "value": 0.419
+    },
+    {
+      "feature": "Unit Type: Police",
+      "value": 0.381
+    }
+  ],
+  "metrics": {
+    "precision": 0.7745,
+    "recall": 1.0,
+    "accuracy": 0.994,
+    "auc": 0.9998
+  },
+  "model_details": {
+    "encoding": "one-hot",
+    "feature_columns": 21,
+    "class_weight": "balanced",
+    "max_iter": 1000,
+    "reference_categories": {
+      "rank": "Cadet"
+    },
+    "train_size": 45855,
+    "test_size": 11464,
+    "total_soldiers": 57319,
+    "court_martialled_count": 1183,
+    "court_martial_rate": 0.0206
+  }
+}
