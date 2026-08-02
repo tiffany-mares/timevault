@@ -78,6 +78,41 @@ def test_after_request_hook_skips_admin_paths(mock_get_conn, client):
         assert "INSERT INTO api_request_log" not in call[0][0]
 
 
+@patch("route.get_db_connection")
+def test_after_request_hook_swallows_db_errors(mock_get_conn, client):
+    from route import app
+    mock_get_conn.side_effect = Exception("connection refused")
+
+    app.config['LOG_REQUESTS_IN_TESTS'] = True
+    try:
+        resp = client.get("/api/does-not-exist")
+        assert resp.status_code == 404
+    finally:
+        app.config['LOG_REQUESTS_IN_TESTS'] = False
+
+
+@patch("route.get_db_connection")
+def test_after_request_hook_skips_options(mock_get_conn, client):
+    from route import app
+    app.config['LOG_REQUESTS_IN_TESTS'] = True
+    try:
+        client.options("/api/does-not-exist")
+    finally:
+        app.config['LOG_REQUESTS_IN_TESTS'] = False
+    mock_get_conn.assert_not_called()
+
+
+@patch("route.get_db_connection")
+def test_after_request_hook_skips_non_api_paths(mock_get_conn, client):
+    from route import app
+    app.config['LOG_REQUESTS_IN_TESTS'] = True
+    try:
+        client.get("/not-api")
+    finally:
+        app.config['LOG_REQUESTS_IN_TESTS'] = False
+    mock_get_conn.assert_not_called()
+
+
 # ---------- /api/admin/status ----------
 
 def test_status_requires_token(client):
