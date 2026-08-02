@@ -175,12 +175,15 @@ def run_decision_tree_trigger():
         if len(features) == 0:
             return jsonify({'error': 'At least one feature is required'}), 400
 
-    spec = importlib.util.spec_from_file_location('decision_tree', dt_script_path)
-    dt_module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(dt_module)
+    try:
+        spec = importlib.util.spec_from_file_location('decision_tree', dt_script_path)
+        dt_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(dt_module)
 
-    result = dt_module.run_decision_tree(selected_features=features)
-    return jsonify(result)
+        result = dt_module.run_decision_tree(selected_features=features)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': f'{type(e).__name__}: {e}'}), 500
 
 _ALLOWED_LR_FEATURES = {
     "Rank", "Unit Type", "Birthplace", "Occupation",
