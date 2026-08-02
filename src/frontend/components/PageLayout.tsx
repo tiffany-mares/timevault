@@ -47,7 +47,9 @@ export const PageLayout = ({
       // cover with a theme-tinted scrim for legibility; otherwise the grid.
       const bgStyle = backgroundImage
         ? {
-            backgroundImage: `linear-gradient(hsl(var(--background) / 0.35), hsl(var(--background) / 0.35)), url(${backgroundImage})`,
+            // No scrim over the painting; the glass card supplies its own
+            // legibility. Show the image at full strength.
+            backgroundImage: `url(${backgroundImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }
