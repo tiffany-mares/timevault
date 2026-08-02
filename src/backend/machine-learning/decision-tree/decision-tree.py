@@ -505,6 +505,11 @@ def run_decision_tree(selected_features=None):
     """
     feature_cols = _resolve_features(selected_features)
 
+    # Guard: if no requested feature maps to a supported column, fail cleanly
+    # instead of crashing later in pd.concat([]) (mirrors logistic_regression.run).
+    if not feature_cols:
+        return {"error": "No valid features selected."}
+
     enlistment_df, court_martialled_df = load_data()
 
     df, feature_cols = prepare_dataset(enlistment_df, court_martialled_df, feature_cols)

@@ -88,10 +88,21 @@ def test_dt_features_not_list(client):
 
 
 def test_dt_all_valid_features(client):
-    valid = ["Rank","Unit Type","Birthplace","Occupation",
+    valid = ["Rank","Birthplace","Occupation",
              "Marital Status","Enlistment Year","Birth Year"]
     for f in valid:
         resp = client.post("/api/run-decision-tree",
             data=json.dumps({"features":[f]}),
             content_type="application/json")
-        assert resp.status_code != 400 or "Invalid" not in resp.get_json().get("error","")
+        assert resp.status_code == 200, f"{f} -> {resp.status_code}: {resp.get_data(as_text=True)[:200]}"
+        assert "tree_lines" in resp.get_json()
+
+
+def test_dt_unit_type_rejected(client):
+    # Unit Type is not a supported decision-tree feature; must be cleanly
+    # rejected (400), never a 500 crash.
+    resp = client.post("/api/run-decision-tree",
+        data=json.dumps({"features":["Unit Type"]}),
+        content_type="application/json")
+    assert resp.status_code == 400
+    assert "Invalid" in resp.get_json()["error"]

@@ -157,7 +157,7 @@ def offence_compare():
     return jsonify({'error': str(e)}), 500
 
 _ALLOWED_DT_FEATURES = {
-    "Rank", "Unit Type", "Birthplace", "Occupation",
+    "Rank", "Birthplace", "Occupation",
     "Marital Status", "Enlistment Year", "Birth Year",
 }
 
