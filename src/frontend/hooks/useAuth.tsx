@@ -50,12 +50,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     const data = await response.json();
                     setUser(data.user);
                     localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-                } else {
-                    // Token expired or invalid - clear it
+                } else if (response.status === 401 || response.status === 403) {
+                    // Token genuinely rejected (expired/invalid) - clear it
                     localStorage.removeItem(TOKEN_KEY);
                     localStorage.removeItem(USER_KEY);
                     setUser(null);
                 }
+                // Any other non-ok status (e.g. 5xx when the backend is down
+                // behind the dev proxy) is transient - keep the existing session.
             } catch {
                 // Server unreachable - keep existing user state
             } finally {
