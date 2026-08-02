@@ -47,7 +47,7 @@ export const PageLayout = ({
       // cover with a theme-tinted scrim for legibility; otherwise the grid.
       const bgStyle = backgroundImage
         ? {
-            backgroundImage: `linear-gradient(hsl(var(--background) / 0.55), hsl(var(--background) / 0.55)), url(${backgroundImage})`,
+            backgroundImage: `linear-gradient(hsl(var(--background) / 0.35), hsl(var(--background) / 0.35)), url(${backgroundImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }
