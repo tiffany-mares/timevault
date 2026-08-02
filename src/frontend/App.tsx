@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AdminRoute } from "@/components/AdminRoute";
 
 function ScrollToHash() {
   const { pathname, hash } = useLocation();
@@ -66,10 +67,10 @@ function App() {
                   <Route path="/user-dashboard" element={<UserDashboard />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/admin-login" element={<AdminLogin />} />
-                  <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                  <Route path="/admin-logs" element={<AdminLogs />} />
-                  <Route path="/admin-export" element={<Export />} />
-                  <Route path="/admin-metadata" element={<Metadata />} />
+                  <Route path="/admin-dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+                  <Route path="/admin-logs" element={<AdminRoute><AdminLogs /></AdminRoute>} />
+                  <Route path="/admin-export" element={<AdminRoute><Export /></AdminRoute>} />
+                  <Route path="/admin-metadata" element={<AdminRoute><Metadata /></AdminRoute>} />
                   <Route path="/dashboard" element={<GuestMenu />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
