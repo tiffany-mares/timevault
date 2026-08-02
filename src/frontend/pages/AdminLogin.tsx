@@ -38,7 +38,7 @@ export default function AdminLogin() {
 
     return (
         <PageLayout code="P-18" centered showBackToMenu={false} showHeader={false} showFooter={false} backgroundImage={authBg}>
-            <GlassCard className="block w-full max-w-sm text-center py-10 px-8 shadow-lg bg-card/45 border-border/40 text-foreground backdrop-blur-none">
+            <GlassCard className="block w-full max-w-sm text-center py-10 px-8 shadow-lg bg-card/45 border-border/40 text-foreground">
                 <img src={logo} alt="TimeVault Logo" className="w-10 h-10 mx-auto mb-4 object-contain" />
                 <h1 className="text-lg font-serif font-bold tracking-wide mb-2">Admin Login</h1>
                 <p className="text-xs text-muted-foreground font-body mb-8">
