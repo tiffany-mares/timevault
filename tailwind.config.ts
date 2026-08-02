@@ -14,9 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        // Headings use the `serif` token; repointed to Schibsted Grotesk to
-        // match the reference site's all-grotesk typography.
-        serif: ["Schibsted Grotesk", "Inter", "system-ui", "sans-serif"],
+        serif: ["Merriweather", "Georgia", "Times New Roman", "serif"],
         body: ["Schibsted Grotesk", "Inter", "system-ui", "sans-serif"],
         mono: ["Spline Sans Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
