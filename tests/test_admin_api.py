@@ -90,6 +90,10 @@ def test_after_request_hook_swallows_db_errors(mock_get_conn, client):
     finally:
         app.config['LOG_REQUESTS_IN_TESTS'] = False
 
+    # Prove the hook actually reached the DB call (and thus swallowed the raise);
+    # without this the test would pass vacuously if the request were never logged.
+    mock_get_conn.assert_called_once()
+
 
 @patch("route.get_db_connection")
 def test_after_request_hook_skips_options(mock_get_conn, client):
@@ -97,6 +101,17 @@ def test_after_request_hook_skips_options(mock_get_conn, client):
     app.config['LOG_REQUESTS_IN_TESTS'] = True
     try:
         client.options("/api/does-not-exist")
+    finally:
+        app.config['LOG_REQUESTS_IN_TESTS'] = False
+    mock_get_conn.assert_not_called()
+
+
+@patch("route.get_db_connection")
+def test_after_request_hook_skips_head(mock_get_conn, client):
+    from route import app
+    app.config['LOG_REQUESTS_IN_TESTS'] = True
+    try:
+        client.head("/api/does-not-exist")
     finally:
         app.config['LOG_REQUESTS_IN_TESTS'] = False
     mock_get_conn.assert_not_called()
