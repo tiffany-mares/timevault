@@ -21,6 +21,7 @@ The app is deployed and running at **https://timevault-web.onrender.com**. Guest
 - [What is this?](#what-is-this)
 - [Live Demo](#live-demo)
 - [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
 - [Setting Up PostgreSQL](#setting-up-postgresql)
 - [Getting Started](#getting-started)
@@ -65,6 +66,37 @@ Three ML methods are available:
 - **Decision Tree** - builds a classification tree that predicts whether a soldier would be court-martialled based on selected demographic features. The result is an interactive, expandable tree visualization with colour-coded leaf nodes showing court martial rates relative to the baseline.
 - **Logistic Regression** - fits a regression model that assigns a numerical coefficient to every feature value, ranking them by how much they increase or decrease court martial likelihood. Results are shown as a diverging bar chart with positive (increases risk) and negative (decreases risk) directions.
 - **Naive Bayes** - a pattern discovery tool (not a prediction model) that focuses on soldiers who were court-martialled and identifies which ranks, unit types, and enlistment years are overrepresented or underrepresented within each offence category. Uses lift metrics, conditional probability heatmaps, and stacked breakdowns.
+
+## Architecture
+
+TimeVault is a three-tier app: a static React frontend, a Flask + gunicorn API, and a PostgreSQL database. The frontend makes only relative `/api` calls; in production a static-site rewrite proxies those to the backend (same-origin, no CORS), and in local dev Vite proxies them to `localhost:5001`. The API layer serves data queries, JWT auth, and the ML models, and logs every request. Most data comes from PostgreSQL; the Naive Bayes model reads a bundled CSV.
+
+```mermaid
+flowchart TD
+    User(["User / Browser"])
+    CSV[/"Courts Martial CSV<br/>(bundled with backend)"/]
+
+    subgraph Cloud["Render (cloud) — local dev mirrors this via Vite proxy"]
+        SPA["Static Site: React + Vite SPA<br/>(timevault-web)"]
+
+        subgraph API["Web Service: Flask + gunicorn (timevault-api)"]
+            Routes["REST endpoints<br/>/api/auth/* · /api/trends · /api/compare<br/>/api/reports · /api/admin/*"]
+            ML["ML models<br/>Decision Tree · Logistic Regression · Naive Bayes"]
+            Hook["after_request<br/>request logger"]
+        end
+
+        DB[("PostgreSQL (timevault-db)<br/>ww1_enlistment · ww1_court_martial · joined<br/>app_user · user_reports · api_request_log")]
+    end
+
+    User -->|HTTPS| SPA
+    SPA -->|"/api/* (rewrite proxy)"| Routes
+    Routes --> ML
+    Routes -->|SQL| DB
+    ML -->|"query (Decision Tree, Logistic Regression)"| DB
+    ML -->|"read (Naive Bayes)"| CSV
+    Routes --> Hook
+    Hook -->|"INSERT log row"| DB
+```
 
 ## Prerequisites
 
