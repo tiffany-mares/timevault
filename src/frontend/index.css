@@ -56,6 +56,12 @@
     --chart-5: 220 25% 45%;
     --chart-6: 345 35% 35%;
     --chart-7: 25 50% 45%;
+
+    /* Motion tokens (inspired by recompile-web): one refined "signature"
+       easing used across reveals and hovers for a cohesive feel. */
+    --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-hover: 220ms;
+    --dur-reveal: 560ms;
   }
 
   .dark {
@@ -141,6 +147,17 @@
 
   .panel {
     @apply bg-card border border-border rounded-md p-5 shadow-sm transition-all duration-200;
+    /* Gentle entrance reveal (fade + rise). "backwards" fill shows the start
+       state before it runs but does NOT pin the end state, so hover transforms
+       on interactive panels still work afterward. Longhand avoids the shorthand
+       duration being clobbered by Tailwind's transition duration utility. */
+    animation-name: reveal-rise;
+    /* !important because interactive cards use tailwindcss-animate's duration-*
+       utility (for their hover transition), which also sets animation-duration
+       and would otherwise shorten the reveal on those cards. */
+    animation-duration: var(--dur-reveal) !important;
+    animation-timing-function: var(--ease-signature);
+    animation-fill-mode: backwards;
   }
 
   .panel-header {
@@ -152,10 +169,29 @@
   }
 
   .nav-bar {
-    @apply bg-gradient-to-r from-olive to-navy text-parchment shadow-md;
+    @apply text-parchment shadow-md;
+    /* Frosted glass: translucent olive->navy bar that blurs the content
+       scrolling beneath the sticky header (inspired by recompile-web). */
+    background: linear-gradient(to right, hsl(var(--olive) / 0.85), hsl(var(--navy) / 0.85));
+    -webkit-backdrop-filter: blur(12px) saturate(1.1);
+    backdrop-filter: blur(12px) saturate(1.1);
   }
 
   .stat-card {
     @apply panel text-center;
+  }
+}
+
+/* Entrance reveal used by .panel */
+@keyframes reveal-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Respect users who prefer reduced motion: no entrance animation, content
+   shows immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none !important;
   }
 }

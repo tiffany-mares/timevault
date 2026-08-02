@@ -62,6 +62,7 @@ export const PageLayout = ({
           <div className={`container mx-auto ${maxWidth} space-y-6`}>
             {title && (
                 <div className="text-center space-y-2 pb-2">
+                  {code && <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold/80">[ {code} ]</p>}
                   <h1 className="text-xl font-serif font-bold text-foreground">{title}</h1>
                   {subtitle && <p className="text-sm text-muted-foreground font-body">{subtitle}</p>}
                   <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto" />
