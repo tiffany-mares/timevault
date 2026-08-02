@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { WireButton } from "@/components/wireframe";
 import { PageLayout } from "@/components/PageLayout";
-import { Marquee } from "@/components/Marquee";
 import logo from "@/assets/timevault-logo.png";
 import authBg from "@/assets/background.jpg";
 
@@ -44,11 +43,6 @@ export default function Landing() {
                 </WireButton>
               </div>
             </div>
-
-            <Marquee
-              className="mt-5 opacity-80"
-              items={["1914", "1915", "1916", "1917", "1918", "Desertion", "Absence", "Insubordination", "Drunkenness", "Cowardice", "Courts Martial", "CEF Records"]}
-            />
         </div>
       </PageLayout>
     );

@@ -43,7 +43,7 @@ const offenceCodes = [
 
 const UserManual = () => {
     return (
-        <PageLayout code="P-UM" title="User Manual" subtitle="Guide to using the TimeVault platform for exploring CEF disciplinary patterns (1914-1918)" maxWidth="max-w-4xl">
+        <PageLayout code="P-UM" title="User Manual" subtitle="Guide to using the TimeVault platform for exploring CEF disciplinary patterns (1914-1918)" maxWidth="max-w-4xl" marqueeItems={["User Manual", "Overview", "How to Use", "Modules", "Offence Codes", "Occupations"]}>
             <SectionNav sections={[
                 { id: "um-overview", label: "Overview" },
                 { id: "um-how-to", label: "How to Use" },

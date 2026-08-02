@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { AppHeader } from "@/components/AppHeader";
 import { ThemeToggleFloat } from "@/components/ThemeToggleFloat";
 import { WireButton } from "@/components/wireframe/WireButton";
+import { Marquee } from "@/components/Marquee";
 
 interface PageLayoutProps {
     children: React.ReactNode;
@@ -17,6 +18,7 @@ interface PageLayoutProps {
     centered?: boolean;
     headerOverride?: React.ReactNode;
     backgroundImage?: string;
+    marqueeItems?: string[];
 }
 
 export const PageLayout = ({
@@ -29,8 +31,16 @@ export const PageLayout = ({
   centered = false,
   headerOverride,
   backgroundImage,
+  marqueeItems,
 }: PageLayoutProps) => {
     const navigate = useNavigate();
+    // Content pages always show a marquee. Use the page's own items when given;
+    // otherwise fall back to the page title plus the shared era context so the
+    // strip still reflects the current page.
+    const marqueeContent =
+      marqueeItems && marqueeItems.length
+        ? marqueeItems
+        : [title, "CEF 1914–1918", "Courts Martial Records", "Statistics Canada"].filter(Boolean) as string[];
 
     if (centered) {
       // When a backgroundImage is given (auth pages), use it as a full-bleed
@@ -60,6 +70,10 @@ export const PageLayout = ({
           {showHeader && (headerOverride || <AppHeader />)}
 
           <div className={`container mx-auto ${maxWidth} space-y-6`}>
+            <Marquee
+              className="border-y-2 border-olive/30 bg-olive/[0.07] py-2.5 rounded-sm"
+              items={marqueeContent}
+            />
             {title && (
                 <div className="text-center space-y-2 pb-2">
                   {code && <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold/80">[ {code} ]</p>}

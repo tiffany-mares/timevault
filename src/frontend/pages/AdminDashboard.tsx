@@ -60,7 +60,7 @@ const AdminDashboard = () => {
     const mlCount = status ? Object.values(status.ml_models).filter(Boolean).length : null;
 
     return (
-        <PageLayout code="P-19" title="Admin Dashboard" subtitle="System overview, database status, and analysis tools" showBackToMenu={false} headerOverride={<AdminHeader />}>
+        <PageLayout code="P-19" title="Admin Dashboard" subtitle="System overview, database status, and analysis tools" showBackToMenu={false} headerOverride={<AdminHeader />} marqueeItems={["Admin Dashboard", "Backend Status", "Database", "ML Models", "Live Counts", "System Overview"]}>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <WireBox dashed={false} className="text-center p-4">

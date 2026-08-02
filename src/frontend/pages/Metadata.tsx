@@ -59,7 +59,7 @@ const Metadata = () => {
       ];
 
       return (
-        <PageLayout code="P-22" title="System Metadata" subtitle="Database schema, table structure, and column details" showBackToMenu={true} backButtonPath="/admin-dashboard" backButtonLabel="Back to Admin Dashboard" maxWidth="max-w-4xl" headerOverride={<AdminHeader />}>
+        <PageLayout code="P-22" title="System Metadata" subtitle="Database schema, table structure, and column details" showBackToMenu={true} backButtonPath="/admin-dashboard" backButtonLabel="Back to Admin Dashboard" maxWidth="max-w-4xl" headerOverride={<AdminHeader />} marqueeItems={["System Metadata", "Schema", "Tables", "Columns", "Data Types", "Indexes"]}>
 
             <div className="grid grid-cols-3 gap-4">
               <WireBox dashed={false} className="p-4 text-center">
@@ -133,7 +133,7 @@ const Metadata = () => {
     }
 
     return (
-        <PageLayout code="P-11" title="Dataset Information" subtitle="Sources, temporal and geographic coverage, known limitations, and ethical considerations" maxWidth="max-w-4xl">
+        <PageLayout code="P-11" title="Dataset Information" subtitle="Sources, temporal and geographic coverage, known limitations, and ethical considerations" maxWidth="max-w-4xl" marqueeItems={["Dataset Information", "Data Sources", "Temporal Coverage", "Geographic Coverage", "Limitations", "Statistics Canada"]}>
             <SectionNav sections={[
                 { id: "di-overview", label: "Overview" },
                 { id: "di-sources", label: "Data Sources" },

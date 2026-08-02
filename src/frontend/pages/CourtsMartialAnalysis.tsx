@@ -765,6 +765,7 @@ const handleApply = () => {
       code="P-OT"
       title="Offence Trends - WWI Courts Martial Records"
       subtitle="Explore how disciplinary offences were recorded among Canadian soldiers during the First World War (1914-1918)."
+      marqueeItems={["Offence Trends", "By Rank", "By Unit Type", "By Year", "Distribution", "Desertion", "Absence", "Insubordination", "Drunkenness"]}
     >
       <div className="p-4 bg-muted/30 border border-border rounded-md -mt-2">
         <div className="flex items-start gap-3">

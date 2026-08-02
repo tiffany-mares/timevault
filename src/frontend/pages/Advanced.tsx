@@ -86,6 +86,7 @@ const Advanced = () => {
       code="P-07"
       title="Machine Learning Analysis"
       subtitle="Use machine learning to find patterns in WWI courts martial data."
+      marqueeItems={["Machine Learning", "Decision Tree", "Logistic Regression", "Naive Bayes", "Classification", "60,000+ Records"]}
     >
         <p className="text-xs text-muted-foreground font-body text-center -mt-3 mb-2">
             These algorithms analyze over 60,000 Canadian Expeditionary Force service records and courts martial proceedings from 1914-1918, searching for statistical patterns that connect soldier demographics to disciplinary outcomes.

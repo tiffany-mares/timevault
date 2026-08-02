@@ -207,6 +207,7 @@ const Compare = () => {
           code="P-05"
           title="Comparative Analysis"
           subtitle="Compare disciplinary patterns across different groups in the Canadian Expeditionary Force during WWI."
+          marqueeItems={["Comparative Analysis", "Group A", "Group B", "By Rank", "By Unit Type", "By Year", "Offence Distribution"]}
       >
         <div className="p-4 bg-muted/30 border border-border rounded-md -mt-2">
            <div className="flex items-start gap-3">

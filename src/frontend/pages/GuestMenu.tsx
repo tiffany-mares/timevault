@@ -20,6 +20,7 @@ const GuestMenu = () => {
         code="P-02"
         title="Menu"
         subtitle="Aggregate Canadian CEF disciplinary data (1914-1918)"
+        marqueeItems={["Offence Trends", "Compare", "ML Analysis", "Dataset Info", "User Manual", "CEF 1914–1918"]}
         maxWidth="max-w-3xl"
         backButtonLabel="Back to Sign In"
         backButtonPath="/"

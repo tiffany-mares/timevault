@@ -72,6 +72,7 @@ const AdminLogs = () => {
             backButtonPath="/admin-dashboard"
             headerOverride={<AdminHeader />}
             backButtonLabel="Back to Admin Dashboard"
+            marqueeItems={["System Logs", "API Requests", "Method", "Status Code", "Duration", "Live Log"]}
         >
             <WireBox dashed={false} label="API REQUEST LOG" accent="olive">
                 <div className="flex items-center justify-between mb-4">

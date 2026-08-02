@@ -14,10 +14,10 @@ export const Marquee = ({ items, className }: MarqueeProps) => {
             <div className="marquee__track">
                 {[...items, ...items].map((item, i) => (
                     <span key={i} className="flex items-center">
-                        <span className="mx-4 text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+                        <span className="mx-5 text-xs font-mono font-medium uppercase tracking-widest text-foreground/75">
                             {item}
                         </span>
-                        <span className="text-gold/60">·</span>
+                        <span className="text-gold">·</span>
                     </span>
                 ))}
             </div>
