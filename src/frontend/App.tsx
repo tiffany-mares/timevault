@@ -33,6 +33,7 @@ import AnalysisResults from "./pages/AnalysisResults";
 import Metadata from "./pages/Metadata";
 import Export from "./pages/Export";
 import UserManual from "./pages/UserManual";
+import HowItWorks from "./pages/HowItWorks";
 import UserLogin from "./pages/UserLogin";
 import Register from "./pages/Register";
 import UserDashboard from "./pages/UserDashboard";
@@ -59,6 +60,7 @@ function App() {
                   <Route path="/advanced-results" element={<AdvancedResults />} />
                   <Route path="/courts-martial" element={<CourtsMartialAnalysis />} />
                   <Route path="/user-manual" element={<UserManual />} />
+                  <Route path="/tech-stack" element={<HowItWorks />} />
                   <Route path="/analysis-processing" element={<AnalysisProcessing />} />
                   <Route path="/analysis-results" element={<AnalysisResults />} />
                   <Route path="/metadata" element={<Metadata />} />

@@ -20,6 +20,7 @@ const nav: NavItem[] = [
   { label: "ML Analysis", path: "/advanced", matchPaths: ["/advanced", "/advanced-results", "/analysis-processing", "/analysis-results"] },
   { label: "Dataset Info", path: "/metadata", matchPaths: ["/metadata"] },
   { label: "User Manual", path: "/user-manual" },
+  { label: "Tech Stack", path: "/tech-stack", matchPaths: ["/tech-stack"] },
 ];
 const userNav: NavItem[] = [
     { label: "Dashboard", path: "/user-dashboard", matchPaths: ["/user-dashboard"] },
