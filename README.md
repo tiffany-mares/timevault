@@ -15,6 +15,22 @@ The system supports three user roles: guests can browse freely without an accoun
 
 The app is deployed and running at **https://timevault-web.onrender.com**. Guest access is available from the landing page without an account. See the [Deployment](#deployment-render) section for how it's hosted.
 
+## Contents
+
+- [Team](#team)
+- [What is this?](#what-is-this)
+- [Live Demo](#live-demo)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Setting Up PostgreSQL](#setting-up-postgresql)
+- [Getting Started](#getting-started)
+- [How the App Works](#how-the-app-works)
+- [Authentication](#authentication)
+- [Project Structure](#project-structure)
+- [API Endpoints](#api-endpoints)
+- [Deployment (Render)](#deployment-render)
+- [Available Scripts](#available-scripts)
+
 ## Tech Stack
 
 ### Frontend
