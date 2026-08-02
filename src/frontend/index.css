@@ -129,6 +129,8 @@
   .app-bg {
     background-color: hsl(var(--background));
     background-image:
+      /* paper grain (fractal-noise SVG) for an aged-archival tooth */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.18'/%3E%3C/svg%3E"),
       radial-gradient(circle at 12% 18%, hsl(var(--gold) / 0.07), transparent 42%),
       radial-gradient(circle at 88% 84%, hsl(var(--teal) / 0.06), transparent 46%),
       linear-gradient(to right, hsl(var(--olive) / 0.16) 1px, transparent 1px),
@@ -136,6 +138,7 @@
       linear-gradient(to right, hsl(var(--olive) / 0.08) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--olive) / 0.08) 1px, transparent 1px);
     background-size:
+      160px 160px,
       100% 100%,
       100% 100%,
       180px 180px,
@@ -188,10 +191,33 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Respect users who prefer reduced motion: no entrance animation, content
-   shows immediately. */
+/* Ambient micro-animations (inspired by recompile-web) */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes caret-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.55; } 50% { transform: scale(1.35); opacity: 1; } }
+
+/* Horizontal scrolling strip. Track holds two copies of the content and
+   slides -50% for a seamless loop. */
+.marquee { overflow: hidden; white-space: nowrap; }
+.marquee__track {
+  display: inline-flex;
+  will-change: transform;
+  animation: marquee 32s linear infinite;
+}
+.marquee:hover .marquee__track { animation-play-state: paused; }
+
+/* Blinking terminal caret */
+.caret-blink { animation: caret-blink 1.1s steps(1, end) infinite; }
+
+/* "Breathing" status pulse */
+.breathe { animation: breathe 2.4s var(--ease-signature) infinite; }
+
+/* Respect users who prefer reduced motion: no entrance or ambient animation. */
 @media (prefers-reduced-motion: reduce) {
-  .panel {
+  .panel,
+  .marquee__track,
+  .caret-blink,
+  .breathe {
     animation: none !important;
   }
 }

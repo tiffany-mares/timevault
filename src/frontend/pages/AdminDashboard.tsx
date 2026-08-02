@@ -65,7 +65,10 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <WireBox dashed={false} className="text-center p-4">
                     <Server className={`w-5 h-5 mx-auto mb-2 ${statusError ? "text-rust" : "text-olive"}`} />
-                    <p className="text-lg font-mono font-bold">{backendLabel}</p>
+                    <p className="text-lg font-mono font-bold flex items-center justify-center gap-2">
+                        {status && <span className="breathe inline-block w-2 h-2 rounded-full bg-olive" />}
+                        {backendLabel}
+                    </p>
                     <p className="text-xs text-muted-foreground font-body">Backend Status</p>
                 </WireBox>
                 <WireBox dashed={false} className="text-center p-4">

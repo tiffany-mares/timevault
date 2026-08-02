@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { WireButton } from "@/components/wireframe";
 import { PageLayout } from "@/components/PageLayout";
+import { Marquee } from "@/components/Marquee";
 import logo from "@/assets/timevault-logo.png";
 import authBg from "@/assets/background.jpg";
 
@@ -24,6 +25,7 @@ export default function Landing() {
               <h1 className="text-2xl font-serif font-bold tracking-wide mb-2 text-navy">TimeVault Technologies</h1>
               <p className="text-sm text-gold font-body font-medium mb-2">
                   CEF Disciplinary Records Explorer
+                  <span className="caret-blink ml-0.5 font-mono">▍</span>
               </p>
               <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-4" />
               <p className="text-sm text-muted-foreground font-body mb-10 leading-relaxed">
@@ -42,6 +44,11 @@ export default function Landing() {
                 </WireButton>
               </div>
             </div>
+
+            <Marquee
+              className="mt-5 opacity-80"
+              items={["1914", "1915", "1916", "1917", "1918", "Desertion", "Absence", "Insubordination", "Drunkenness", "Cowardice", "Courts Martial", "CEF Records"]}
+            />
         </div>
       </PageLayout>
     );
